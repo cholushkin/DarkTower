@@ -46,3 +46,7 @@
 /Unity/Game/Truchet.Editor.csproj
 /Unity/Game/TruchetTiles.csproj
 /Unity/Game/VersionHistory.Integrations.GameLib.csproj
+/Unity/Game/DarkTower.Data.Editor.csproj
+/Unity/Game/DarkTower.Data.csproj
+/Unity/Game/DarkTower.Gameplay.Tests.csproj
+/Unity/Game/DarkTower.Gameplay.csproj
