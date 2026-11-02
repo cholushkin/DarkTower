@@ -6,7 +6,9 @@
         "DarkTower.Gameplay",
         "VContainer",
         "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner"
+        "UnityEditor.TestRunner",
+        "R3.Unity",
+        "R3.Unity.Editor"
     ],
     "includePlatforms": [
         "Editor"
