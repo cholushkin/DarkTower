@@ -85,7 +85,11 @@ namespace Game
         {
             Id = id;
             MissionId = missionId;
-            ReservedSquad = reservedSquad;
+            // Defensive copy: the caller's list must not be able to corrupt release/injury resolution
+            // by mutating it after launch (e.g. a List<EntityId> the caller keeps a reference to).
+            var squadCopy = new EntityId[reservedSquad?.Count ?? 0];
+            for (int i = 0; i < squadCopy.Length; i++) squadCopy[i] = reservedSquad[i];
+            ReservedSquad = squadCopy;
             LaunchWeek = launchWeek;
             StartGameHours = startGameHours;
             DueGameHours = dueGameHours;

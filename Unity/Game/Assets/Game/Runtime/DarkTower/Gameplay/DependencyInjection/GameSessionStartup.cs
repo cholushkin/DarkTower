@@ -16,18 +16,21 @@ namespace Game
         private readonly RecoveryService _recovery;
         private readonly WorldProgressionService _world;
         private readonly ClockService _clock;
+        private readonly PayrollService _payroll;
 
-        public GameSessionStartup(RecoveryService recovery, WorldProgressionService world, ClockService clock)
+        public GameSessionStartup(RecoveryService recovery, WorldProgressionService world, ClockService clock, PayrollService payroll)
         {
             _recovery = recovery;
             _world = world;
             _clock = clock;
+            _payroll = payroll;
         }
 
         public void Initialize()
         {
             _world.RefreshAccessibility();
             _recovery.RunAutoAssignment(_clock.NowHours);
+            _payroll.OpenInitialWindow();
         }
     }
 }

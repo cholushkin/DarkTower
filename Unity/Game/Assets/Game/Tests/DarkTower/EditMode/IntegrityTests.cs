@@ -79,6 +79,17 @@ namespace Game.Tests
             Assert.IsFalse(pay.Success);
             Assert.AreEqual("game_over", pay.Reason);
 
+            var spend = session.Economy.TrySpendGold(1);
+            Assert.IsFalse(spend.Success);
+            Assert.AreEqual("game_over", spend.Reason);
+
+            var sale = session.Sales.TryStartSale(new EntityId(123456), SaleKind.Instant);
+            Assert.IsFalse(sale.Success);
+            Assert.AreEqual("game_over", sale.Reason);
+
+            var insert = session.Inventory.TryInsert(h.PlainItem, 5);
+            Assert.AreEqual(0, insert.Accepted, "Storehouse contents must not change once the game has ended.");
+
             Assert.AreEqual(goldBefore, session.Economy.Gold.CurrentValue, "No operation above should have spent anything.");
         }
     }

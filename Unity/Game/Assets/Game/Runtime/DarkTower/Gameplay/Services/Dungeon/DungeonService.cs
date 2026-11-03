@@ -16,12 +16,14 @@ namespace Game
         private readonly GameSessionModel _session;
         private readonly IRandomSource _random;
         private readonly ClockService _clock;
+        private readonly WorldProgressionService _world;
 
-        public DungeonService(GameSessionModel session, IRandomSource random, ClockService clock)
+        public DungeonService(GameSessionModel session, IRandomSource random, ClockService clock, WorldProgressionService world)
         {
             _session = session;
             _random = random;
             _clock = clock;
+            _world = world;
         }
 
         private DungeonModel Dungeon => _session.Dungeon;
@@ -119,6 +121,11 @@ namespace Game
             }
         }
 
+        /// Resolves a random interrogation event through the central world-accessibility rules rather
+        /// than mutating mission state directly: an explicitly named unlock still respects tier
+        /// gating (WorldProgressionService.TryUnlockMissionFromEvent), and a newly set flag triggers a
+        /// full RefreshAccessibility so any OTHER mission whose own UnlockConditions reference that
+        /// flag opens too, not only the missions this event names.
         private void ApplyRandomInterrogationEvent()
         {
             var events = Rules != null ? Rules.InterrogationEvents : null;
@@ -127,18 +134,20 @@ namespace Game
             var evt = events[_random.NextInt(0, events.Length - 1)];
             if (evt == null) return;
 
-            if (!string.IsNullOrEmpty(evt.SetsWorldFlag)) _session.World.SetFlag(evt.SetsWorldFlag);
+            bool flagChanged = !string.IsNullOrEmpty(evt.SetsWorldFlag) && !_session.World.HasFlag(evt.SetsWorldFlag);
+            if (flagChanged) _session.World.SetFlag(evt.SetsWorldFlag);
 
             var unlocks = evt.UnlocksMissions;
-            if (unlocks == null) return;
-            for (int i = 0; i < unlocks.Length; i++)
+            if (unlocks != null)
             {
-                var missionDef = unlocks[i];
-                if (missionDef == null) continue;
-                var progress = _session.World.FindMission(missionDef.Id);
-                if (progress != null && progress.State.CurrentValue == MissionState.Locked)
-                    progress.SetState(MissionState.Available);
+                for (int i = 0; i < unlocks.Length; i++)
+                {
+                    var missionDef = unlocks[i];
+                    if (missionDef != null) _world.TryUnlockMissionFromEvent(missionDef.Id);
+                }
             }
+
+            if (flagChanged) _world.RefreshAccessibility();
         }
 
         private float ComputeProcessingDurationHours(int rank)

@@ -170,6 +170,18 @@ namespace Game
                     prisoners.Add(new CapturedPrisoner(RollPrisonerRank(missionDef.PrisonerRankDistribution)));
             }
 
+            // Preselect a valid within-budget subset so the Raid Report has a sensible default
+            // instead of exposing every discovered copy unselected; the player may still change it
+            // before Claim. RaidClaimPolicy's greedy discovery-order fill is a provisional default,
+            // not a finalized selection-priority rule.
+            var preselected = RaidClaimPolicy.DefaultPreselect(items, raid.CarryLimit);
+            if (preselected.Count > 0)
+            {
+                var preselectedSet = new HashSet<EntityId>(preselected);
+                for (int i = 0; i < items.Count; i++)
+                    if (preselectedSet.Contains(items[i].Id)) items[i].SetSelected(true);
+            }
+
             raid.ResolveSuccess(gold, crystals, items, prisoners);
         }
 
@@ -196,6 +208,8 @@ namespace Game
         /// fails with "already_claimed" and changes nothing.
         public OperationResult TryClaimRaid(string missionId, EntityId raidId, IReadOnlyList<EntityId> selectedCopyIds)
         {
+            if (_session.IsTerminal) return OperationResult.Fail("game_over");
+
             var progress = _session.World.FindMission(missionId);
             var raid = progress?.CurrentRaid.CurrentValue;
             if (raid == null || !raid.Id.Equals(raidId)) return OperationResult.Fail("raid_not_found");

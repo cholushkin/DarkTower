@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using NUnit.Framework;
+using UnityEngine;
 
 namespace Game.Tests
 {
@@ -82,6 +83,77 @@ namespace Game.Tests
             }
             Assert.IsTrue(foundRank1Recruit);
             Assert.IsTrue(foundRank2Recruit);
+        }
+
+        [Test]
+        public void InterrogationEventRespectsTierGatingAndRefreshesOtherFlagGatedMissions()
+        {
+            var (db, h) = GameplayTestFixtures.BuildMinimalDatabase();
+
+            // Named directly in the event's UnlocksMissions, but placed in tier 1 — not yet reached —
+            // so the explicit unlock must not bypass tier gating.
+            var farMission = BuildBareMission("far_mission");
+            // Reachable (tier 0) but gated on the secret flag the event sets, and NOT named in the
+            // event's UnlocksMissions — only a RefreshAccessibility pass can open it.
+            var flagGatedMission = BuildBareMission("flag_gated_mission");
+            GameplayTestFixtures.SetField(flagGatedMission, "unlockConditions", new[]
+            {
+                GameplayTestFixtures.NewStruct<UnlockCondition>(("type", UnlockConditionType.SecretRevealed), ("targetId", "found_secret"))
+            });
+
+            GameplayTestFixtures.SetField(db, "missions", new[] { h.Mission, farMission, flagGatedMission });
+
+            var tier0 = GameplayTestFixtures.NewStruct<WorldTierEntry>(("tierId", "tier0"), ("missions", new[]
+            {
+                GameplayTestFixtures.NewStruct<WorldMissionPlacement>(("mission", h.Mission), ("position", Vector2.zero)),
+                GameplayTestFixtures.NewStruct<WorldMissionPlacement>(("mission", flagGatedMission), ("position", Vector2.one)),
+            }));
+            var tier1 = GameplayTestFixtures.NewStruct<WorldTierEntry>(("tierId", "tier1"), ("missions", new[]
+            {
+                GameplayTestFixtures.NewStruct<WorldMissionPlacement>(("mission", farMission), ("position", Vector2.zero)),
+            }));
+            GameplayTestFixtures.SetField(db.WorldMap, "tiers", new[] { tier0, tier1 });
+
+            var evt = ScriptableObject.CreateInstance<EventDefinition>();
+            GameplayTestFixtures.SetField(evt, "eventId", "found_catacombs");
+            GameplayTestFixtures.SetField(evt, "setsWorldFlag", "found_secret");
+            GameplayTestFixtures.SetField(evt, "unlocksMissions", new[] { farMission });
+
+            GameplayTestFixtures.SetField(h.DungeonRules, "interrogationEvents", new[] { evt });
+            GameplayTestFixtures.SetField(h.DungeonRules, "outcomeDistribution", GameplayTestFixtures.NewStruct<PrisonerOutcomeDistribution>(
+                ("recruitmentWeight", 0f), ("interrogationWeight", 1f), ("deathWeight", 0f)));
+
+            db.InvalidateCaches();
+            using var session = GameplaySessionComposer.Create(db, 1);
+
+            session.Dungeon.AdmitPrisoners(new List<CapturedPrisoner> { new CapturedPrisoner(1) }, 0f);
+            session.Scheduler.AdvanceGameTime(2f); // base processing duration is 1h -> Interrogation resolves
+
+            var far = session.Session.World.FindMission(farMission.Id);
+            var flagGated = session.Session.World.FindMission(flagGatedMission.Id);
+
+            Assert.IsTrue(session.Session.World.HasFlag("found_secret"));
+            Assert.AreEqual(MissionState.Locked, far.State.CurrentValue,
+                "Tier 1 is not reached yet; an explicit event unlock must not bypass tier gating.");
+            Assert.AreEqual(MissionState.Available, flagGated.State.CurrentValue,
+                "Setting the flag must refresh OTHER missions whose own unlock conditions it satisfies, not only the ones the event names.");
+        }
+
+        private static MissionDefinition BuildBareMission(string missionId)
+        {
+            var def = ScriptableObject.CreateInstance<MissionDefinition>();
+            GameplayTestFixtures.SetField(def, "missionId", missionId);
+            GameplayTestFixtures.SetField(def, "displayName", missionId);
+            GameplayTestFixtures.SetField(def, "requiredPower", 1f);
+            GameplayTestFixtures.SetField(def, "baseDuration", new GameDuration(2f, DurationUnit.Hours));
+            GameplayTestFixtures.SetField(def, "baseInjuryChance", new Probability(0f));
+            GameplayTestFixtures.SetField(def, "goldRange", new IntRange(0, 0));
+            GameplayTestFixtures.SetField(def, "crystalRange", new IntRange(0, 0));
+            GameplayTestFixtures.SetField(def, "itemRewards", System.Array.Empty<ItemRewardEntry>());
+            GameplayTestFixtures.SetField(def, "prisonerCountRange", new IntRange(0, 0));
+            GameplayTestFixtures.SetField(def, "prisonerRankDistribution", System.Array.Empty<RankWeight>());
+            GameplayTestFixtures.SetField(def, "squadConstraints", default(SquadConstraints));
+            return def;
         }
     }
 }

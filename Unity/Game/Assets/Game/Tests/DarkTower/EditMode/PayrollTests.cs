@@ -87,5 +87,34 @@ namespace Game.Tests
             Assert.IsFalse(session.Session.IsBankrupt.CurrentValue);
             Assert.IsFalse(session.Session.IsTerminal);
         }
+
+        [Test]
+        public void PaydayWindowForTheFirstPeriodIsOpenFromSessionStart()
+        {
+            var (db, _) = GameplayTestFixtures.BuildMinimalDatabase();
+            using var session = GameplaySessionComposer.Create(db, 1);
+
+            Assert.IsTrue(session.Session.Payroll.IsWindowOpen.CurrentValue,
+                "A bill is accruing from hour 0, so the window must already be open rather than only appearing at the first boundary.");
+            Assert.AreEqual(24f * 7f, session.Session.Payroll.DeadlineGameHours.Value, 0.01f);
+        }
+
+        [Test]
+        public void PaydayCadenceFollowsPaydayIntervalDaysIndependentlyOfMissionWeekLength()
+        {
+            var (db, _) = GameplayTestFixtures.BuildMinimalDatabase();
+            // Payday every 3 game-days while missions still turn over weekly (7 days) — previously
+            // PaydayIntervalDays was authored but never consumed, so payday silently followed
+            // DaysPerWeek regardless of this setting.
+            GameplayTestFixtures.SetField(db.GlobalBalance, "paydayIntervalDays", 3);
+            using var session = GameplaySessionComposer.Create(db, 1);
+
+            Assert.AreEqual(24f * 3f, session.Session.Payroll.DeadlineGameHours.Value, 0.01f);
+
+            session.Scheduler.AdvanceGameTime(24f * 3f + 1f); // past the 3-day payday boundary, unpaid
+
+            Assert.IsTrue(session.Session.IsBankrupt.CurrentValue, "Bankruptcy must follow the 3-day payday cadence, not the 7-day mission week.");
+            Assert.AreEqual(0, session.Clock.CurrentWeek, "The mission week must still be governed by DaysPerWeek, unaffected by the payday cadence.");
+        }
     }
 }

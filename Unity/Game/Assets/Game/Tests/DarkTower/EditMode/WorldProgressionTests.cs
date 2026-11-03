@@ -45,5 +45,26 @@ namespace Game.Tests
             var nextWeekRelaunch = session.Raids.TryStartRaid(h.Mission.Id, new List<EntityId> { minions[1].Id });
             Assert.IsTrue(nextWeekRelaunch.Success, "A mission may be replayed in a later week, even after a prior successful completion.");
         }
+
+        [Test]
+        public void MissionReturnsToAvailableStateAtTheNextWeekBoundaryAfterCooldown()
+        {
+            // MissionState.Cooldown must actually clear once a new week begins; it previously stuck a
+            // same-week-claimed mission in Cooldown forever, with nothing ever re-evaluating it.
+            var (db, h, _) = GameplayTestFixtures.BuildTwoMissionDatabase();
+            using var session = GameplaySessionComposer.Create(db, 1);
+            var minions = session.Minions.Roster.Minions;
+
+            var launch = session.Raids.TryStartRaid(h.Mission.Id, new List<EntityId> { minions[0].Id });
+            session.Scheduler.AdvanceGameTime(3f);
+            session.Raids.TryClaimRaid(h.Mission.Id, launch.Value, null);
+
+            var progress = session.Session.World.FindMission(h.Mission.Id);
+            Assert.AreEqual(MissionState.Cooldown, progress.State.CurrentValue);
+
+            session.Scheduler.AdvanceGameTime(7f * 24f);
+
+            Assert.AreEqual(MissionState.Available, progress.State.CurrentValue, "Cooldown must clear once a new week begins.");
+        }
     }
 }

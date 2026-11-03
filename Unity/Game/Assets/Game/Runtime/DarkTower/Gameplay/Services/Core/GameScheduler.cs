@@ -35,6 +35,7 @@ namespace Game
         private readonly DungeonService _dungeon;
         private readonly RaidService _raids;
         private readonly PayrollService _payroll;
+        private readonly WorldProgressionService _world;
 
         public GameScheduler(
             ClockService clock,
@@ -47,7 +48,8 @@ namespace Game
             TowerUpgradeService towerUpgrades,
             DungeonService dungeon,
             RaidService raids,
-            PayrollService payroll)
+            PayrollService payroll,
+            WorldProgressionService world)
         {
             _clock = clock;
             _session = session;
@@ -60,6 +62,7 @@ namespace Game
             _dungeon = dungeon;
             _raids = raids;
             _payroll = payroll;
+            _world = world;
         }
 
         public void AdvanceGameTime(float hours)
@@ -80,8 +83,10 @@ namespace Game
 
                 float nightfall = _clock.NextNightfallAfter(now);
                 float payday = _clock.NextPaydayBoundaryAfter(now);
+                float weekBoundary = _clock.NextWeekBoundaryAfter(now);
                 next = Math.Min(next, nightfall);
                 next = Math.Min(next, payday);
+                next = Math.Min(next, weekBoundary);
                 next = Math.Min(next, NextDueAcrossServices(now));
 
                 if (next > target) next = target;
@@ -89,15 +94,17 @@ namespace Game
 
                 bool isNightfall = Approximately(next, nightfall);
                 bool isPayday = Approximately(next, payday);
+                bool isWeekBoundary = Approximately(next, weekBoundary);
 
                 _clock.AdvanceTo(next);
-                ProcessBoundary(next, isNightfall, isPayday);
+                ProcessBoundary(next, isNightfall, isPayday, isWeekBoundary);
             }
         }
 
-        private void ProcessBoundary(float now, bool isNightfall, bool isPayday)
+        private void ProcessBoundary(float now, bool isNightfall, bool isPayday, bool isWeekBoundary)
         {
             if (isNightfall) _minions.ApplyNightfallTired(now);
+            if (isWeekBoundary) _world.OnWeekAdvanced(_clock.CurrentWeek);
 
             _recovery.ProcessDue(now);
             _training.ProcessDue(now);
@@ -107,7 +114,7 @@ namespace Game
             _dungeon.ProcessDue(now);
             _raids.ProcessDue(now);
 
-            if (isPayday) _payroll.EvaluatePaydayBoundary(now, _clock.CurrentWeek);
+            if (isPayday) _payroll.EvaluatePaydayBoundary(now, _clock.CurrentPaydayPeriod);
 
             _recovery.RunAutoAssignment(now);
             _recovery.CheckBedShortageDepartures(now);

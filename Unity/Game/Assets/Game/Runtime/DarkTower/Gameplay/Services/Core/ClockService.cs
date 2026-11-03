@@ -19,12 +19,14 @@ namespace Game
 
         public float GameHoursPerDay => _clock.GameHoursPerDay;
         public int DaysPerWeek => _clock.DaysPerWeek;
+        public int PaydayIntervalDays => _clock.PaydayIntervalDays;
         public float NightfallHourOfDay => _clock.NightfallHourOfDay;
 
         public ReadOnlyReactiveProperty<float> TotalGameHours => _clock.TotalGameHours;
         public float NowHours => _clock.TotalGameHours.CurrentValue;
         public int CurrentDay => _clock.CurrentDay;
         public int CurrentWeek => _clock.CurrentWeek;
+        public int CurrentPaydayPeriod => _clock.CurrentPaydayPeriod;
         public float HourOfDay => _clock.HourOfDay;
         public bool IsNight => _clock.IsNight;
 
@@ -60,14 +62,21 @@ namespace Game
             return candidate;
         }
 
-        /// Smallest instant strictly after afterHours at which a payday boundary occurs
-        /// (every DaysPerWeek game-days, starting after the first full week).
-        public float NextPaydayBoundaryAfter(float afterHours)
+        /// Smallest instant strictly after afterHours at which the mission week advances (every
+        /// DaysPerWeek game-days). Missions become launchable again on this boundary, independent of
+        /// the payday cadence below.
+        public float NextWeekBoundaryAfter(float afterHours) => NextBoundaryAfter(afterHours, DaysPerWeek);
+
+        /// Smallest instant strictly after afterHours at which a payday period boundary occurs
+        /// (every PaydayIntervalDays game-days, starting after the first full period).
+        public float NextPaydayBoundaryAfter(float afterHours) => NextBoundaryAfter(afterHours, PaydayIntervalDays);
+
+        private float NextBoundaryAfter(float afterHours, int intervalDays)
         {
-            float weekHours = DaysPerWeek * GameHoursPerDay;
-            if (weekHours <= 0f) return float.PositiveInfinity;
-            double weekIndex = Math.Floor(afterHours / weekHours) + 1;
-            return (float)(weekIndex * weekHours);
+            float periodHours = intervalDays * GameHoursPerDay;
+            if (periodHours <= 0f) return float.PositiveInfinity;
+            double periodIndex = Math.Floor(afterHours / periodHours) + 1;
+            return (float)(periodIndex * periodHours);
         }
 
         private sealed class PauseHandle : IDisposable

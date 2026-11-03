@@ -99,6 +99,31 @@ namespace Game.Tests
         }
 
         [Test]
+        public void BedShortageDepartureDeadlineIsObservableAsTheServicesNextDueTime()
+        {
+            // 1 Infirmary bed; occupy it, then make a second minion wait with none free. Previously
+            // the >2-day departure clock was invisible to the scheduler, so a departure could only be
+            // caught whenever some unrelated boundary (nightfall, payday, another timer) next ran.
+            var (db, _) = GameplayTestFixtures.BuildMinimalDatabase();
+            using var session = GameplaySessionComposer.Create(db, 1);
+
+            var minions = session.Minions.Roster.Minions;
+            minions[0].AddCondition(MinionCondition.Injured, 0f);
+            minions[1].AddCondition(MinionCondition.Injured, 0f);
+            session.Recovery.RunAutoAssignment(0f);
+
+            Assert.AreEqual(MinionActivity.Treating, minions[0].Activity.CurrentValue);
+            Assert.AreEqual(MinionActivity.Idle, minions[1].Activity.CurrentValue, "No Infirmary bed left; still waiting.");
+
+            float graceHours = session.Session.Database.RecoveryRules.BedShortageDeparture.ToHours(session.Clock.GameHoursPerDay);
+            var nextDue = session.Recovery.NextDueHours();
+
+            Assert.IsTrue(nextDue.HasValue);
+            Assert.AreEqual(graceHours, nextDue.Value, 0.01f,
+                "The waiting minion's departure deadline must be observable as the service's next due time.");
+        }
+
+        [Test]
         public void RunAutoAssignmentNeverDoubleAssignsTheSameMinion()
         {
             var (db, _) = GameplayTestFixtures.BuildMinimalDatabase();

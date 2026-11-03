@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using UnityEngine;
 
 namespace Game.Tests
 {
@@ -38,6 +39,46 @@ namespace Game.Tests
 
             Assert.IsFalse(second.Success);
             Assert.AreEqual("already_in_progress", second.Reason);
+        }
+
+        [Test]
+        public void SequentialSeriesStepsMustBePurchasedInOrder()
+        {
+            var (db, h) = GameplayTestFixtures.BuildMinimalDatabase();
+
+            var step0 = BuildSeriesStep("sale_eff_0", "sale_efficiency", 0);
+            var step1 = BuildSeriesStep("sale_eff_1", "sale_efficiency", 1);
+            GameplayTestFixtures.SetField(db, "roomUpgrades", new[] { h.ExtraBedUpgrade, h.UnlockTrainingUpgrade, step0, step1 });
+            db.InvalidateCaches();
+
+            using var session = GameplaySessionComposer.Create(db, 1);
+
+            var outOfOrder = session.TowerUpgrades.TryPurchaseUpgrade(step1.Id);
+            Assert.IsFalse(outOfOrder.Success);
+            Assert.AreEqual("sequence_out_of_order", outOfOrder.Reason);
+            Assert.IsFalse(session.Session.Tower.IsUpgradeCompleted(step1.Id));
+
+            var inOrder = session.TowerUpgrades.TryPurchaseUpgrade(step0.Id);
+            Assert.IsTrue(inOrder.Success);
+            session.Scheduler.AdvanceGameTime(1f);
+            Assert.IsTrue(session.Session.Tower.IsUpgradeCompleted(step0.Id));
+
+            var nowAllowed = session.TowerUpgrades.TryPurchaseUpgrade(step1.Id);
+            Assert.IsTrue(nowAllowed.Success, "Step 0 is now completed, so step 1 may be purchased.");
+        }
+
+        private static RoomUpgradeDefinition BuildSeriesStep(string upgradeId, string seriesId, int stepIndex)
+        {
+            var def = ScriptableObject.CreateInstance<RoomUpgradeDefinition>();
+            GameplayTestFixtures.SetField(def, "upgradeId", upgradeId);
+            GameplayTestFixtures.SetField(def, "roomId", RoomId.Storehouse);
+            GameplayTestFixtures.SetField(def, "seriesId", seriesId);
+            GameplayTestFixtures.SetField(def, "stepIndex", stepIndex);
+            GameplayTestFixtures.SetField(def, "cost", GameplayTestFixtures.NewStruct<ResourceCost>(("gold", 1), ("crystals", 0), ("items", null)));
+            GameplayTestFixtures.SetField(def, "duration", new GameDuration(0.1f, DurationUnit.Hours));
+            GameplayTestFixtures.SetField(def, "effects", System.Array.Empty<UpgradeEffect>());
+            GameplayTestFixtures.SetField(def, "towerXpReward", 0L);
+            return def;
         }
 
         [Test]

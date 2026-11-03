@@ -95,6 +95,31 @@ namespace Game.Tests
         }
 
         [Test]
+        public void MutatingTheCallersSquadListAfterLaunchDoesNotAffectTheReservedSquad()
+        {
+            var (db, h) = GameplayTestFixtures.BuildMinimalDatabase();
+            using var session = GameplaySessionComposer.Create(db, 1);
+            var minion = session.Minions.Roster.Minions[0];
+            var otherMinion = session.Minions.Roster.Minions[1];
+
+            var squadList = new List<EntityId> { minion.Id };
+            var launch = session.Raids.TryStartRaid(h.Mission.Id, squadList);
+            Assert.IsTrue(launch.Success);
+
+            // Mutate the caller's own list after launch — RaidModel must have taken a defensive copy.
+            squadList[0] = otherMinion.Id;
+            squadList.Add(minion.Id);
+
+            session.Scheduler.AdvanceGameTime(3f);
+            var claim = session.Raids.TryClaimRaid(h.Mission.Id, launch.Value, null);
+
+            Assert.IsTrue(claim.Success);
+            Assert.AreEqual(MinionActivity.Idle, minion.Activity.CurrentValue, "The originally-reserved minion must still be released.");
+            Assert.AreEqual(MinionActivity.Idle, otherMinion.Activity.CurrentValue, "A minion never actually in the squad must be unaffected either way.");
+            Assert.IsFalse(otherMinion.HasCondition(MinionCondition.Tired), "Only the originally-reserved minion returns from the raid.");
+        }
+
+        [Test]
         public void SuccessfulLaunchReservesTheSquad()
         {
             var (db, h) = GameplayTestFixtures.BuildMinimalDatabase();
@@ -195,6 +220,28 @@ namespace Game.Tests
             Assert.IsFalse(second.Success);
             Assert.AreEqual("already_claimed", second.Reason);
             Assert.AreEqual(goldAfterFirstClaim, session.Economy.Gold.CurrentValue);
+        }
+
+        [Test]
+        public void SuccessfulRaidPreselectsAValidSubsetWithinTheCarryBudget()
+        {
+            var (db, h) = GameplayTestFixtures.BuildMinimalDatabase();
+            using var session = GameplaySessionComposer.Create(db, 1);
+            var minion = session.Minions.Roster.Minions[0];
+
+            var launch = session.Raids.TryStartRaid(h.Mission.Id, Squad(minion.Id));
+            session.Scheduler.AdvanceGameTime(3f);
+
+            var raid = session.Session.World.FindMission(h.Mission.Id).CurrentRaid.CurrentValue;
+            Assert.AreEqual(RaidOutcome.Success, raid.Outcome.CurrentValue);
+            Assert.Greater(raid.DiscoveredItems.Count, 0, "This fixture's mission always drops at least one item copy.");
+
+            int selectedCount = 0;
+            foreach (var copy in raid.DiscoveredItems)
+                if (copy.Selected.CurrentValue) selectedCount++;
+
+            Assert.Greater(selectedCount, 0, "A newly completed successful raid must expose a preselected subset, not leave every copy unselected.");
+            Assert.LessOrEqual(raid.SelectedCarryUsed(), raid.CarryLimit, "The preselection must stay within the carry budget.");
         }
 
         [Test]

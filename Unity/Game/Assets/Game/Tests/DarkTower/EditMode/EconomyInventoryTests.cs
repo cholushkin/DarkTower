@@ -14,6 +14,7 @@ namespace Game.Tests
             var result = session.Economy.TrySpendGold(goldBefore + 1000);
 
             Assert.IsFalse(result.Success);
+            Assert.AreEqual("insufficient_resources", result.Reason);
             Assert.AreEqual(goldBefore, session.Economy.Gold.CurrentValue);
         }
 
@@ -25,6 +26,7 @@ namespace Game.Tests
 
             var result = session.Economy.TrySpendGold(session.Economy.Gold.CurrentValue + 1);
             Assert.IsFalse(result.Success);
+            Assert.AreEqual("insufficient_resources", result.Reason);
             Assert.GreaterOrEqual(session.Economy.Gold.CurrentValue, 0);
         }
 
@@ -79,6 +81,7 @@ namespace Game.Tests
             var result = session.Inventory.TryRemoveQuantity(h.PlainItem, 10);
 
             Assert.IsFalse(result.Success);
+            Assert.AreEqual("insufficient_items", result.Reason);
             Assert.AreEqual(3, session.Inventory.QuantityOf(h.PlainItem));
         }
 
@@ -113,8 +116,52 @@ namespace Game.Tests
             var result = session.Economy.TrySpend(cost);
 
             Assert.IsFalse(result.Success);
+            Assert.AreEqual("insufficient_resources", result.Reason);
             Assert.AreEqual(goldBefore, session.Economy.Gold.CurrentValue);
             Assert.AreEqual(1, session.Inventory.QuantityOf(h.PlainItem));
+        }
+
+        [Test]
+        public void DuplicateItemCostEntriesAreAggregatedAndRemainAtomic()
+        {
+            var (db, h) = GameplayTestFixtures.BuildMinimalDatabase();
+            using var session = GameplaySessionComposer.Create(db, 1);
+
+            session.Inventory.TryInsert(h.PlainItem, 5); // only 5 copies on hand
+
+            // The same item appears twice (3 + 5 = 8), more than the 5 actually held. Each entry
+            // previously passed CanAfford independently against the full 5 held, so the deduction
+            // removed 3, then failed (silently) trying to remove the remaining 5 from only 2 left.
+            var cost = GameplayTestFixtures.NewStruct<ResourceCost>(
+                ("gold", 0),
+                ("crystals", 0),
+                ("items", new[]
+                {
+                    GameplayTestFixtures.NewStruct<ItemAmount>(("item", h.PlainItem), ("amount", 3)),
+                    GameplayTestFixtures.NewStruct<ItemAmount>(("item", h.PlainItem), ("amount", 5)),
+                }));
+
+            var result = session.Economy.TrySpend(cost);
+
+            Assert.IsFalse(result.Success);
+            Assert.AreEqual("insufficient_resources", result.Reason);
+            Assert.AreEqual(5, session.Inventory.QuantityOf(h.PlainItem), "A failed spend must not remove any of the held copies.");
+        }
+
+        [Test]
+        public void StartingStacksNeverExceedConfiguredStorageCapacity()
+        {
+            var (db, h) = GameplayTestFixtures.BuildMinimalDatabase(); // 5 storage slots
+            GameplayTestFixtures.SetField(db.StartingBalance, "startingItemStacks", new[]
+            {
+                GameplayTestFixtures.NewStruct<ItemAmount>(("item", h.PlainItem), ("amount", 100)) // 10 stacks' worth (maxStackSize 10)
+            });
+
+            using var session = GameplaySessionComposer.Create(db, 1);
+
+            Assert.LessOrEqual(session.Inventory.Stacks.Count, session.Session.Inventory.SlotCapacity.CurrentValue,
+                "Starting stacks authored beyond StorageSlots must never produce an over-capacity inventory.");
+            Assert.AreEqual(0, session.Inventory.FreeSlots);
         }
     }
 }

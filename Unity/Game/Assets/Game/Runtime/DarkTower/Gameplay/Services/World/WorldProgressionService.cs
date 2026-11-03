@@ -67,10 +67,6 @@ namespace Game
         /// conditions (Claim, an interrogation event setting a world flag, a tier unlock).
         public void RefreshAccessibility()
         {
-            var worldMap = Db.WorldMap;
-            if (worldMap == null) return;
-            int currentTier = World.CurrentTierIndex.CurrentValue;
-
             var missions = World.Missions;
             for (int i = 0; i < missions.Count; i++)
             {
@@ -78,14 +74,59 @@ namespace Game
                 if (progress.State.CurrentValue != MissionState.Locked) continue;
 
                 var missionDef = Db.GetMission(progress.MissionId);
-                if (missionDef == null) continue;
-
-                int tierIndex = worldMap.FindTierIndexOf(missionDef);
-                if (tierIndex < 0 || tierIndex > currentTier) continue;
-
-                if (UnlockConditionRules.AllSatisfied(missionDef.UnlockConditions, _session))
-                    progress.SetState(MissionState.Available);
+                if (IsAccessible(missionDef)) progress.SetState(MissionState.Available);
             }
+        }
+
+        /// Called by GameScheduler whenever the mission week advances. A mission claimed within its
+        /// own launch week sits in Cooldown until a later week begins (see OnMissionClaimed); this
+        /// reopens any such mission to Available now that it is launchable again, without bypassing
+        /// the same tier/unlock-condition checks RefreshAccessibility enforces for Locked missions.
+        public void OnWeekAdvanced(int currentWeek)
+        {
+            var missions = World.Missions;
+            for (int i = 0; i < missions.Count; i++)
+            {
+                var progress = missions[i];
+                if (progress.State.CurrentValue != MissionState.Cooldown) continue;
+                if (progress.LastLaunchWeek.HasValue && progress.LastLaunchWeek.Value >= currentWeek) continue;
+
+                var missionDef = Db.GetMission(progress.MissionId);
+                if (IsAccessible(missionDef)) progress.SetState(MissionState.Available);
+            }
+        }
+
+        /// Opens a Locked mission that an interrogation event explicitly names in its authored
+        /// UnlocksMissions list. The event's unlock is independent of that mission's own
+        /// UnlockConditions (the event itself is the unlock path, e.g. "a secret reveals this
+        /// location"), but still respects tier accessibility — a secret cannot spring open a mission
+        /// in a tier the player has not reached. Provisional: the exact interaction between
+        /// event-driven unlocks and tier gating is not finalized by the design.
+        public bool TryUnlockMissionFromEvent(string missionId)
+        {
+            var progress = World.FindMission(missionId);
+            if (progress == null || progress.State.CurrentValue != MissionState.Locked) return false;
+
+            var worldMap = Db.WorldMap;
+            var missionDef = Db.GetMission(missionId);
+            if (worldMap == null || missionDef == null) return false;
+
+            int tierIndex = worldMap.FindTierIndexOf(missionDef);
+            if (tierIndex < 0 || tierIndex > World.CurrentTierIndex.CurrentValue) return false;
+
+            progress.SetState(MissionState.Available);
+            return true;
+        }
+
+        private bool IsAccessible(MissionDefinition missionDef)
+        {
+            var worldMap = Db.WorldMap;
+            if (worldMap == null || missionDef == null) return false;
+
+            int tierIndex = worldMap.FindTierIndexOf(missionDef);
+            if (tierIndex < 0 || tierIndex > World.CurrentTierIndex.CurrentValue) return false;
+
+            return UnlockConditionRules.AllSatisfied(missionDef.UnlockConditions, _session);
         }
 
         private void TryAdvanceTierIfComplete()

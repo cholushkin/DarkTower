@@ -51,6 +51,7 @@ namespace Game
         public InsertResult TryInsert(ItemDefinition item, int amount)
         {
             if (item == null || amount <= 0) return new InsertResult(0, 0);
+            if (_session.IsTerminal) return new InsertResult(0, amount);
 
             int maxStack = item.MaxStackSize < 1 ? 1 : item.MaxStackSize;
             int remaining = amount;
@@ -83,6 +84,7 @@ namespace Game
         public OperationResult TryRemoveQuantity(ItemDefinition item, int amount)
         {
             if (item == null || amount <= 0) return OperationResult.Fail("invalid_request");
+            if (_session.IsTerminal) return OperationResult.Fail("game_over");
             if (!HasQuantity(item, amount)) return OperationResult.Fail("insufficient_items");
 
             int remaining = amount;
@@ -103,6 +105,7 @@ namespace Game
         /// Removes an entire stack regardless of quantity (full-stack sale, both sale kinds).
         public OperationResult TryRemoveStack(EntityId stackId)
         {
+            if (_session.IsTerminal) return OperationResult.Fail("game_over");
             var stack = FindStack(stackId);
             if (stack == null) return OperationResult.Fail("stack_not_found");
             Inventory.RemoveStack(stack);

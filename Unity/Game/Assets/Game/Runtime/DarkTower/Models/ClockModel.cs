@@ -13,11 +13,13 @@ namespace Game
     {
         private readonly ReactiveProperty<float> _totalGameHours;
 
-        public ClockModel(float gameHoursPerDay, int daysPerWeek, float nightfallHourOfDay, float startGameHours = 0f)
+        public ClockModel(float gameHoursPerDay, int daysPerWeek, float nightfallHourOfDay,
+            int paydayIntervalDays = 0, float startGameHours = 0f)
         {
             GameHoursPerDay = gameHoursPerDay <= 0f ? 24f : gameHoursPerDay;
             DaysPerWeek = daysPerWeek < 1 ? 7 : daysPerWeek;
             NightfallHourOfDay = nightfallHourOfDay;
+            PaydayIntervalDays = paydayIntervalDays < 1 ? DaysPerWeek : paydayIntervalDays;
             _totalGameHours = new ReactiveProperty<float>(startGameHours);
             Disposables.Add(_totalGameHours);
         }
@@ -26,10 +28,16 @@ namespace Game
         public int DaysPerWeek { get; }
         public float NightfallHourOfDay { get; }
 
+        /// Payday cadence in game-days. Independent of DaysPerWeek: missions become launchable again
+        /// on a mission-week boundary, while payroll comes due on a payday-period boundary, and the
+        /// two need not coincide.
+        public int PaydayIntervalDays { get; }
+
         public ReadOnlyReactiveProperty<float> TotalGameHours => _totalGameHours;
 
         public int CurrentDay => (int)(_totalGameHours.CurrentValue / GameHoursPerDay);
         public int CurrentWeek => CurrentDay / DaysPerWeek;
+        public int CurrentPaydayPeriod => CurrentDay / PaydayIntervalDays;
         public float HourOfDay => _totalGameHours.CurrentValue % GameHoursPerDay;
         public bool IsNight => HourOfDay >= NightfallHourOfDay;
 

@@ -25,6 +25,8 @@ namespace Game
 
         public OperationResult<EntityId> TryStartSale(EntityId stackId, SaleKind kind)
         {
+            if (_session.IsTerminal) return OperationResult<EntityId>.Fail("game_over");
+
             var stack = _inventory.FindStack(stackId);
             if (stack == null) return OperationResult<EntityId>.Fail("stack_not_found");
             var item = stack.Item;

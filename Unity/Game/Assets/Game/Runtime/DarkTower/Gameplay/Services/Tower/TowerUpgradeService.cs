@@ -44,6 +44,9 @@ namespace Game
                 }
             }
 
+            if (def.IsSequential && !IsEarliestIncompleteStepInSeries(def))
+                return OperationResult<EntityId>.Fail("sequence_out_of_order");
+
             if (!UnlockConditionRules.AllSatisfied(def.AdditionalRequirements, _session))
                 return OperationResult<EntityId>.Fail("requirement_not_met");
 
@@ -86,6 +89,23 @@ namespace Game
             for (int i = 0; i < list.Count; i++)
                 if (min == null || list[i].DueGameHours < min.Value) min = list[i].DueGameHours;
             return min;
+        }
+
+        /// SeriesId/StepIndex alone describe an intended order; nothing short of this check actually
+        /// enforces it, so a step could otherwise be purchased ahead of its series regardless of
+        /// PrerequisiteUpgrades. A step is purchasable once every lower-StepIndex sibling in the same
+        /// series has completed.
+        private bool IsEarliestIncompleteStepInSeries(RoomUpgradeDefinition def)
+        {
+            var upgrades = Db.RoomUpgrades;
+            for (int i = 0; i < upgrades.Count; i++)
+            {
+                var sibling = upgrades[i];
+                if (sibling == null || sibling == def || sibling.SeriesId != def.SeriesId) continue;
+                if (sibling.StepIndex < def.StepIndex && !Tower.IsUpgradeCompleted(sibling.Id))
+                    return false;
+            }
+            return true;
         }
 
         private bool IsInProgress(string upgradeId)

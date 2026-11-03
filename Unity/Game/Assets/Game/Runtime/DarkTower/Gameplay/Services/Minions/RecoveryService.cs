@@ -83,6 +83,29 @@ namespace Game
             var assignments = Recovery.Assignments;
             for (int i = 0; i < assignments.Count; i++)
                 if (min == null || assignments[i].DueGameHours < min.Value) min = assignments[i].DueGameHours;
+
+            float? departureDue = NextDepartureDueHours();
+            if (departureDue.HasValue && (min == null || departureDue.Value < min.Value)) min = departureDue.Value;
+
+            return min;
+        }
+
+        /// Earliest instant at which any minion currently accumulating a bed-shortage wait reaches
+        /// the departure grace period, or null if nobody is waiting or no grace period is configured.
+        /// Folded into NextDueHours so the scheduler can land a boundary exactly at that deadline
+        /// instead of only detecting the departure whenever some unrelated event next happens to run.
+        private float? NextDepartureDueHours()
+        {
+            if (Rules == null) return null;
+            float graceHours = Rules.BedShortageDeparture.ToHours(_clock.GameHoursPerDay);
+            if (graceHours <= 0f) return null;
+
+            float? min = null;
+            foreach (var since in _waitingSinceHours.Values)
+            {
+                float due = since + graceHours;
+                if (min == null || due < min.Value) min = due;
+            }
             return min;
         }
 

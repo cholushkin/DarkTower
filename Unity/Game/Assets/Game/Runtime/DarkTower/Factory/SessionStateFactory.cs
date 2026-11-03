@@ -24,9 +24,10 @@ namespace Game
 
             float hoursPerDay = balance != null ? balance.GameHoursPerDay : 24f;
             int daysPerWeek = balance != null ? balance.DaysPerWeek : 7;
+            int paydayIntervalDays = balance != null ? balance.PaydayIntervalDays : 7;
             float nightfall = db.RecoveryRules != null ? db.RecoveryRules.NightfallHourOfDay : 20f;
 
-            var clock = new ClockModel(hoursPerDay, daysPerWeek, nightfall);
+            var clock = new ClockModel(hoursPerDay, daysPerWeek, nightfall, paydayIntervalDays);
             var economy = new EconomyModel(
                 start != null ? start.StartingGold : 0,
                 start != null ? start.StartingCrystals : 0);
@@ -74,13 +75,17 @@ namespace Game
                 dungeon, research, world, recovery, training, intelligence, payroll);
         }
 
+        /// Creates starting stacks up to the session's storage capacity. Authored starting stacks
+        /// that would exceed StorageSlots stop filling once slots run out rather than producing an
+        /// over-capacity InventoryModel; that mismatch is a configuration problem for
+        /// DarkTowerDataValidator to flag, not a runtime state this factory should ever create.
         private static void AddStartingStacks(InventoryModel inventory, EntityIdAllocator ids, ItemAmount entry)
         {
             var item = entry.Item;
             if (item == null) return;
             int remaining = entry.Amount;
             int max = item.MaxStackSize < 1 ? 1 : item.MaxStackSize;
-            while (remaining > 0)
+            while (remaining > 0 && inventory.FreeSlots > 0)
             {
                 int inThisStack = remaining < max ? remaining : max;
                 inventory.AddStack(new ItemStackModel(ids.Next(), item, inThisStack));
