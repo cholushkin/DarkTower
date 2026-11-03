@@ -25,7 +25,7 @@ namespace Game
         public float DueGameHours { get; }
         public ReadOnlyReactiveProperty<ActivityStatus> Status => _status;
 
-        public void Complete() => _status.Value = ActivityStatus.Completed;
+        internal void Complete() => _status.Value = ActivityStatus.Completed;
     }
 
     /// Completed research and the at-most-one active process. Permanent global effects are resolved
@@ -36,9 +36,10 @@ namespace Game
         private readonly ReactiveProperty<ResearchProcessModel> _activeProcess;
         private readonly DarkTowerDatabase _db;
 
-        public ResearchModel(DarkTowerDatabase db)
+        public ResearchModel(DarkTowerDatabase db, int baseUnlockedResearchTier = 0)
         {
             _db = db;
+            BaseUnlockedResearchTier = baseUnlockedResearchTier;
             _activeProcess = new ReactiveProperty<ResearchProcessModel>(null);
             Disposables.Add(_activeProcess);
         }
@@ -47,21 +48,27 @@ namespace Game
         public ReadOnlyReactiveProperty<ResearchProcessModel> ActiveProcess => _activeProcess;
         public bool HasActiveProcess => _activeProcess.CurrentValue != null;
 
+        /// Starting research tier captured from StartingBalanceDefinition.InitialRoomCapabilities at
+        /// session creation — the single source of truth SessionStateFactory already reads every
+        /// other starting capacity from. ResearchService adds completed UnlockResearchTier effects on
+        /// top of this rather than re-reading StartingBalanceDefinition itself.
+        public int BaseUnlockedResearchTier { get; }
+
         public bool IsCompleted(string researchId) => _completedResearchIds.Contains(researchId);
 
-        public void MarkCompleted(string researchId)
+        internal void MarkCompleted(string researchId)
         {
             if (!_completedResearchIds.Contains(researchId)) _completedResearchIds.Add(researchId);
         }
 
-        public void SetActiveProcess(ResearchProcessModel process)
+        internal void SetActiveProcess(ResearchProcessModel process)
         {
             var previous = _activeProcess.Value;
             if (previous != null && previous != process) previous.Dispose();
             _activeProcess.Value = process;
         }
 
-        public void ClearActiveProcess()
+        internal void ClearActiveProcess()
         {
             var previous = _activeProcess.Value;
             _activeProcess.Value = null;

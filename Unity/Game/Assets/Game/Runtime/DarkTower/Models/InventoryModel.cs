@@ -24,8 +24,8 @@ namespace Game
         public bool IsTreasure => Item != null && Item.IsTreasure;
         public bool IsFull => Item != null && _quantity.CurrentValue >= Item.MaxStackSize;
 
-        public void SetQuantity(int quantity) => _quantity.Value = quantity;
-        public void Add(int amount) => _quantity.Value += amount;
+        internal void SetQuantity(int quantity) => _quantity.Value = quantity;
+        internal void Add(int amount) => _quantity.Value += amount;
     }
 
     /// Shared item storage. Treasures and Items are filters over one slot pool; each stack uses one
@@ -48,12 +48,12 @@ namespace Game
         public int UsedSlots => _stacks.Count;
         public int FreeSlots => _slotCapacity.CurrentValue - _stacks.Count;
 
-        public void SetSlotCapacity(int capacity) => _slotCapacity.Value = capacity;
-        public void AddSlotCapacity(int delta) => _slotCapacity.Value += delta;
+        internal void SetSlotCapacity(int capacity) => _slotCapacity.Value = capacity;
+        internal void AddSlotCapacity(int delta) => _slotCapacity.Value += delta;
 
-        public void AddStack(ItemStackModel stack) => _stacks.Add(stack);
+        internal void AddStack(ItemStackModel stack) => _stacks.Add(stack);
 
-        public bool RemoveStack(ItemStackModel stack)
+        internal bool RemoveStack(ItemStackModel stack)
         {
             if (_stacks.Remove(stack))
             {

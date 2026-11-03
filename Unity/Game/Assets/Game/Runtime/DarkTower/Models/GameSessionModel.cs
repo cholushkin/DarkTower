@@ -19,8 +19,8 @@ namespace Game
         public ReadOnlyReactiveProperty<bool> IsBankrupt => _isBankrupt;
         public bool IsTerminal => _isVictory.CurrentValue || _isBankrupt.CurrentValue;
 
-        public void DeclareVictory() => _isVictory.Value = true;
-        public void DeclareBankruptcy() => _isBankrupt.Value = true;
+        internal void DeclareVictory() => _isVictory.Value = true;
+        internal void DeclareBankruptcy() => _isBankrupt.Value = true;
 
         public GameSessionModel(
             DarkTowerDatabase database,

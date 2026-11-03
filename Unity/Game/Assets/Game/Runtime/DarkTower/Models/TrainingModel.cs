@@ -46,20 +46,20 @@ namespace Game
         public int OccupiedStations => _assignments.Count;
         public int FreeStations => _stationCapacity.CurrentValue - _assignments.Count;
 
-        public void AddStations(int delta) => _stationCapacity.Value += delta;
+        internal void AddStations(int delta) => _stationCapacity.Value += delta;
 
         public bool IsTransitionUnlocked(int fromRank, int toRank) =>
             _unlockedTransitions.Contains(TransitionKey(fromRank, toRank));
 
-        public void UnlockTransition(int fromRank, int toRank)
+        internal void UnlockTransition(int fromRank, int toRank)
         {
             var key = TransitionKey(fromRank, toRank);
             if (!_unlockedTransitions.Contains(key)) _unlockedTransitions.Add(key);
         }
 
-        public void AddAssignment(TrainingAssignmentModel assignment) => _assignments.Add(assignment);
+        internal void AddAssignment(TrainingAssignmentModel assignment) => _assignments.Add(assignment);
 
-        public bool RemoveAssignment(TrainingAssignmentModel assignment)
+        internal bool RemoveAssignment(TrainingAssignmentModel assignment)
         {
             if (_assignments.Remove(assignment))
             {

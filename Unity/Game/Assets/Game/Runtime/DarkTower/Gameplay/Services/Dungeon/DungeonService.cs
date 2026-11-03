@@ -11,7 +11,7 @@ namespace Game
     ///   outcome drawn proportionally to these three weights (all-zero falls back to Death).
     /// Rank modifiers are treated as additive deltas (to a weight or to base hours), consistent with
     /// their "per-rank adjustment" authoring shape.
-    public sealed class DungeonService
+    public sealed class DungeonService : ITimedProcess
     {
         private readonly GameSessionModel _session;
         private readonly IRandomSource _random;

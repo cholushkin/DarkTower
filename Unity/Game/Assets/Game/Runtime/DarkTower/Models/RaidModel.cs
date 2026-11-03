@@ -59,7 +59,7 @@ namespace Game
         public ReadOnlyReactiveProperty<bool> Selected => _selected;
         public int CarrySize => Item != null ? Item.CarrySize : 0;
 
-        public void SetSelected(bool selected) => _selected.Value = selected;
+        internal void SetSelected(bool selected) => _selected.Value = selected;
     }
 
     /// A captured prisoner as discovered by a raid (pre-Claim data). Becomes a Dungeon PrisonerModel
@@ -114,7 +114,7 @@ namespace Game
         /// (which stays Success/Failure for display/testing) so Claim idempotency does not overload
         /// the result enum.
         public ReadOnlyReactiveProperty<bool> Claimed => _claimed;
-        public void MarkClaimed() => _claimed.Value = true;
+        internal void MarkClaimed() => _claimed.Value = true;
 
         public IReadOnlyObservableList<DiscoveredItemCopy> DiscoveredItems => _discoveredItems;
         public IReadOnlyList<CapturedPrisoner> CapturedPrisoners => _capturedPrisoners;
@@ -124,7 +124,7 @@ namespace Game
         public int CarryLimit => LaunchSnapshot.CarryLimit;
 
         /// Fixes a successful result and its discoveries when the timer completes (still pre-Claim).
-        public void ResolveSuccess(int gold, int crystals,
+        internal void ResolveSuccess(int gold, int crystals,
             IEnumerable<DiscoveredItemCopy> items, IEnumerable<CapturedPrisoner> prisoners)
         {
             DiscoveredGold = gold;
@@ -135,7 +135,7 @@ namespace Game
         }
 
         /// Fixes a failed result: no discoveries.
-        public void ResolveFailure() => _outcome.Value = RaidOutcome.Failure;
+        internal void ResolveFailure() => _outcome.Value = RaidOutcome.Failure;
 
         /// Total carry size of currently selected copies; must not exceed CarryLimit.
         public int SelectedCarryUsed()

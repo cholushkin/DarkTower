@@ -7,7 +7,7 @@ namespace Game
     /// immediately. Removing the stack at the moment the sale starts (for both kinds) resolves the
     /// catalog's open "when is the stack reserved/consumed" question the simplest way available
     /// without inventing a second "reserved" stack state Task 04 does not model.
-    public sealed class SalesService
+    public sealed class SalesService : ITimedProcess
     {
         private readonly GameSessionModel _session;
         private readonly InventoryService _inventory;

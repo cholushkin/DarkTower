@@ -28,7 +28,7 @@ namespace Game
         public float DueGameHours { get; }
         public ReadOnlyReactiveProperty<PrisonerProcessOutcome> Outcome => _outcome;
 
-        public void Resolve(PrisonerProcessOutcome outcome) => _outcome.Value = outcome;
+        internal void Resolve(PrisonerProcessOutcome outcome) => _outcome.Value = outcome;
     }
 
     /// Dungeon cells and the prisoners in them. Cell capacity grows through completed upgrades.
@@ -49,12 +49,12 @@ namespace Game
         public int OccupiedCells => _prisoners.Count;
         public int FreeCells => _cellCapacity.CurrentValue - _prisoners.Count;
 
-        public void SetCellCapacity(int capacity) => _cellCapacity.Value = capacity;
-        public void AddCellCapacity(int delta) => _cellCapacity.Value += delta;
+        internal void SetCellCapacity(int capacity) => _cellCapacity.Value = capacity;
+        internal void AddCellCapacity(int delta) => _cellCapacity.Value += delta;
 
-        public void AddPrisoner(PrisonerModel prisoner) => _prisoners.Add(prisoner);
+        internal void AddPrisoner(PrisonerModel prisoner) => _prisoners.Add(prisoner);
 
-        public bool RemovePrisoner(PrisonerModel prisoner)
+        internal bool RemovePrisoner(PrisonerModel prisoner)
         {
             if (_prisoners.Remove(prisoner))
             {

@@ -4,9 +4,9 @@ namespace Game
     /// permanent global effects (read on demand from completed ids via ResearchModel/StatCalculator —
     /// nothing here duplicates that aggregation). The currently unlocked research tier is the
     /// authored starting tier plus one per completed research_tier_unlock upgrade; it is computed on
-    /// demand rather than stored, since StartingBalanceDefinition and TowerModel.CompletedUpgradeIds
-    /// already carry everything needed.
-    public sealed class ResearchService
+    /// demand rather than stored, since ResearchModel.BaseUnlockedResearchTier and
+    /// TowerModel.CompletedUpgradeIds already carry everything needed.
+    public sealed class ResearchService : ITimedProcess
     {
         private readonly GameSessionModel _session;
         private readonly EconomyService _economy;
@@ -22,11 +22,9 @@ namespace Game
         private ResearchModel Research => _session.Research;
         private DarkTowerDatabase Db => _session.Database;
 
-        public int CurrentUnlockedResearchTier()
-        {
-            int baseTier = Db.StartingBalance != null ? Db.StartingBalance.InitialRoomCapabilities.UnlockedResearchTier : 0;
-            return baseTier + UpgradeEffectRules.CountCompletedEffectsOfKind(_session.Tower, Db, UpgradeEffectKind.UnlockResearchTier);
-        }
+        public int CurrentUnlockedResearchTier() =>
+            Research.BaseUnlockedResearchTier +
+            UpgradeEffectRules.CountCompletedEffectsOfKind(_session.Tower, Db, UpgradeEffectKind.UnlockResearchTier);
 
         public OperationResult<EntityId> TryStartResearch(string researchId)
         {

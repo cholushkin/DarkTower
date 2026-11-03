@@ -5,6 +5,11 @@ namespace Game
     /// New-run starting state: currencies, the three initial minions, optional item stacks, initial
     /// room capabilities, pre-completed upgrades/research, starting Tower XP, and initial world unlocks.
     /// This is authoring data for a new session only; it is not a save system.
+    ///
+    /// InitialRoomCapabilities is the sole authority for every session-start capacity (storage slots,
+    /// beds, training stations, dungeon cells, unlocked research tier) — see SessionStateFactory. The
+    /// only recognized fallback is StorehouseRulesDefinition.InitialStorageSlots, used only when this
+    /// asset is unassigned or its StorageSlots is left at 0.
     [CreateAssetMenu(menuName = "Dark Tower/Starting Balance", fileName = "StartingBalance")]
     public sealed class StartingBalanceDefinition : ScriptableObject
     {

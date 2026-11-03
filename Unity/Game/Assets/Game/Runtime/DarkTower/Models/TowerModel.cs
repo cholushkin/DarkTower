@@ -28,7 +28,7 @@ namespace Game
         public float DueGameHours { get; }
         public ReadOnlyReactiveProperty<ActivityStatus> Status => _status;
 
-        public void Complete() => _status.Value = ActivityStatus.Completed;
+        internal void Complete() => _status.Value = ActivityStatus.Completed;
     }
 
     /// Hidden Tower XP and the completed/in-progress room upgrades. Tower Level is derived from XP
@@ -54,18 +54,18 @@ namespace Game
         /// Current tower level derived from total XP and the configured thresholds.
         public int Level => TowerProgressionRules.DeriveLevel(_totalXp.CurrentValue, _progression);
 
-        public void AddXp(long amount) => _totalXp.Value += amount;
+        internal void AddXp(long amount) => _totalXp.Value += amount;
 
         public bool IsUpgradeCompleted(string upgradeId) => _completedUpgradeIds.Contains(upgradeId);
 
-        public void MarkUpgradeCompleted(string upgradeId)
+        internal void MarkUpgradeCompleted(string upgradeId)
         {
             if (!_completedUpgradeIds.Contains(upgradeId)) _completedUpgradeIds.Add(upgradeId);
         }
 
-        public void AddInProgress(UpgradeProcessModel process) => _inProgressUpgrades.Add(process);
+        internal void AddInProgress(UpgradeProcessModel process) => _inProgressUpgrades.Add(process);
 
-        public bool RemoveInProgress(UpgradeProcessModel process)
+        internal bool RemoveInProgress(UpgradeProcessModel process)
         {
             if (_inProgressUpgrades.Remove(process))
             {

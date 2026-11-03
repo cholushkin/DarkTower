@@ -41,7 +41,7 @@ namespace Game
         public float HourOfDay => _totalGameHours.CurrentValue % GameHoursPerDay;
         public bool IsNight => HourOfDay >= NightfallHourOfDay;
 
-        public void SetGameHours(float hours) => _totalGameHours.Value = hours;
-        public void Advance(float deltaHours) => _totalGameHours.Value += deltaHours;
+        internal void SetGameHours(float hours) => _totalGameHours.Value = hours;
+        internal void Advance(float deltaHours) => _totalGameHours.Value += deltaHours;
     }
 }

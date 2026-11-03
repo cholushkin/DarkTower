@@ -8,7 +8,7 @@ namespace Game
     /// roll) are rolled once at Claim, per the design's "apply return conditions at the specified
     /// Claim transition" — this is a single roll either way (Claim is single-use via RaidModel's
     /// Claimed flag), so nothing here can double-roll or reroll.
-    public sealed class RaidService
+    public sealed class RaidService : ITimedProcess
     {
         private readonly GameSessionModel _session;
         private readonly MinionService _minions;

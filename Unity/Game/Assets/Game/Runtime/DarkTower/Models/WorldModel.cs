@@ -31,18 +31,18 @@ namespace Game
         /// In-game week index of the last launch; null if never launched. Launchable only in a later week.
         public int? LastLaunchWeek { get; private set; }
 
-        public void SetState(MissionState state) => _state.Value = state;
-        public void MarkCompletedOnce() => _completedOnce.Value = true;
-        public void SetLastLaunchWeek(int week) => LastLaunchWeek = week;
+        internal void SetState(MissionState state) => _state.Value = state;
+        internal void MarkCompletedOnce() => _completedOnce.Value = true;
+        internal void SetLastLaunchWeek(int week) => LastLaunchWeek = week;
 
-        public void SetCurrentRaid(RaidModel raid)
+        internal void SetCurrentRaid(RaidModel raid)
         {
             var previous = _currentRaid.Value;
             if (previous != null && previous != raid) previous.Dispose();
             _currentRaid.Value = raid;
         }
 
-        public void ClearCurrentRaid()
+        internal void ClearCurrentRaid()
         {
             var previous = _currentRaid.Value;
             _currentRaid.Value = null;
@@ -73,7 +73,7 @@ namespace Game
         public IReadOnlyObservableList<string> WorldFlags => _worldFlags;
         public ReadOnlyReactiveProperty<int> CurrentTierIndex => _currentTierIndex;
 
-        public void AddMission(MissionProgressModel mission) => _missions.Add(mission);
+        internal void AddMission(MissionProgressModel mission) => _missions.Add(mission);
 
         public MissionProgressModel FindMission(string missionId)
         {
@@ -82,11 +82,11 @@ namespace Game
             return null;
         }
 
-        public void SetCurrentTierIndex(int index) => _currentTierIndex.Value = index;
+        internal void SetCurrentTierIndex(int index) => _currentTierIndex.Value = index;
 
         public bool HasFlag(string flag) => _worldFlags.Contains(flag);
 
-        public void SetFlag(string flag)
+        internal void SetFlag(string flag)
         {
             if (!string.IsNullOrEmpty(flag) && !_worldFlags.Contains(flag)) _worldFlags.Add(flag);
         }

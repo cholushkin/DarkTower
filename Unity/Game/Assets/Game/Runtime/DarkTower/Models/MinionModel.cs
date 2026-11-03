@@ -43,11 +43,11 @@ namespace Game
 
         // Owned mutations. Call from the owning session service, not from presentation.
 
-        public void SetRank(int rank) => _rank.Value = rank;
+        internal void SetRank(int rank) => _rank.Value = rank;
 
-        public void SetActivity(MinionActivity activity) => _activity.Value = activity;
+        internal void SetActivity(MinionActivity activity) => _activity.Value = activity;
 
-        public void AddCondition(MinionCondition condition, float nowGameHours)
+        internal void AddCondition(MinionCondition condition, float nowGameHours)
         {
             var before = _condition.Value;
             var after = before | condition;
@@ -56,7 +56,7 @@ namespace Game
             if (after != before) _condition.Value = after;
         }
 
-        public void RemoveCondition(MinionCondition condition)
+        internal void RemoveCondition(MinionCondition condition)
         {
             var before = _condition.Value;
             var after = before & ~condition;
@@ -88,9 +88,9 @@ namespace Game
         public IReadOnlyObservableList<MinionModel> Minions => _minions;
         public int Count => _minions.Count;
 
-        public void Add(MinionModel minion) => _minions.Add(minion);
+        internal void Add(MinionModel minion) => _minions.Add(minion);
 
-        public bool Remove(MinionModel minion)
+        internal bool Remove(MinionModel minion)
         {
             if (_minions.Remove(minion))
             {

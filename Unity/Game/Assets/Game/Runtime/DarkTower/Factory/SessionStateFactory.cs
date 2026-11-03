@@ -1,11 +1,15 @@
-// Builds new-session runtime Models from configuration. This is DATA construction only: it creates
-// the initial populations, stacks and per-mission progress a fresh run starts with. It does not run
-// timers, apply upgrade/research effects, or orchestrate gameplay initialization.
+// Builds new-session runtime Models from configuration. This creates the initial populations,
+// stacks and per-mission progress a fresh run starts with, then applies each starting completed
+// upgrade's capacity/unlock effects on top through the same UpgradeEffectApplier path
+// TowerUpgradeService uses at runtime completion, so a bonus is never missing just because its
+// upgrade happened to be pre-completed at session start. It does not run timers or otherwise
+// orchestrate gameplay initialization.
 //
-// DECISION: initial_room_capabilities is treated as the authoritative starting capacities. Starting
-//   completed upgrades/research are recorded (for prerequisite/ownership checks) but their effects
-//   are NOT re-applied here, because applying effects is gameplay logic owned by a future service.
-//   A new session and a restored session must end up with the same Model APIs (see DataFlow).
+// DECISION: initial_room_capabilities is treated as the authoritative BASE starting capacities,
+//   before any starting completed upgrade's effects are applied on top. Starting completed
+//   research is recorded (for prerequisite/ownership checks) but carries no capacity effects of its
+//   own to apply. A new session and a restored session must end up with the same Model APIs (see
+//   DataFlow).
 
 using System.Collections.Generic;
 
@@ -57,7 +61,7 @@ namespace Game
 
             var dungeon = new DungeonModel(caps.DungeonCells);
 
-            var research = new ResearchModel(db);
+            var research = new ResearchModel(db, caps.UnlockedResearchTier);
             if (start?.StartingCompletedResearch != null)
             {
                 foreach (var r in start.StartingCompletedResearch)
@@ -71,8 +75,20 @@ namespace Game
             var intelligence = new IntelligenceModel();
             var payroll = new PayrollModel();
 
-            return new GameSessionModel(db, ids, clock, economy, tower, roster, inventory,
+            var session = new GameSessionModel(db, ids, clock, economy, tower, roster, inventory,
                 dungeon, research, world, recovery, training, intelligence, payroll);
+
+            // Applied after the session is fully constructed (every sub-model it touches must exist
+            // first): each starting completed upgrade's capacity/unlock effects on top of the base
+            // capacities above, exactly once, through the same path a runtime purchase completion
+            // uses — see UpgradeEffectApplier. TowerXpReward is deliberately excluded (see there).
+            if (start?.StartingCompletedUpgrades != null)
+            {
+                foreach (var up in start.StartingCompletedUpgrades)
+                    if (up != null) UpgradeEffectApplier.Apply(session, up);
+            }
+
+            return session;
         }
 
         /// Creates starting stacks up to the session's storage capacity. Authored starting stacks

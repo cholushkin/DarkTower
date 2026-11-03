@@ -28,14 +28,12 @@ namespace Game
         private readonly GameSessionModel _session;
         private readonly MinionService _minions;
         private readonly RecoveryService _recovery;
-        private readonly TrainingService _training;
-        private readonly SalesService _sales;
-        private readonly ResearchService _research;
-        private readonly TowerUpgradeService _towerUpgrades;
-        private readonly DungeonService _dungeon;
-        private readonly RaidService _raids;
         private readonly PayrollService _payroll;
         private readonly WorldProgressionService _world;
+
+        /// Every timed process GameScheduler drives, in the fixed order ProcessBoundary processes
+        /// them — a technical scheduling choice (see class remarks), not a gameplay-priority decision.
+        private readonly ITimedProcess[] _timedProcesses;
 
         public GameScheduler(
             ClockService clock,
@@ -55,14 +53,9 @@ namespace Game
             _session = session;
             _minions = minions;
             _recovery = recovery;
-            _training = training;
-            _sales = sales;
-            _research = research;
-            _towerUpgrades = towerUpgrades;
-            _dungeon = dungeon;
-            _raids = raids;
             _payroll = payroll;
             _world = world;
+            _timedProcesses = new ITimedProcess[] { recovery, training, sales, research, towerUpgrades, dungeon, raids };
         }
 
         public void AdvanceGameTime(float hours)
@@ -106,13 +99,7 @@ namespace Game
             if (isNightfall) _minions.ApplyNightfallTired(now);
             if (isWeekBoundary) _world.OnWeekAdvanced(_clock.CurrentWeek);
 
-            _recovery.ProcessDue(now);
-            _training.ProcessDue(now);
-            _sales.ProcessDue(now);
-            _research.ProcessDue(now);
-            _towerUpgrades.ProcessDue(now);
-            _dungeon.ProcessDue(now);
-            _raids.ProcessDue(now);
+            for (int i = 0; i < _timedProcesses.Length; i++) _timedProcesses[i].ProcessDue(now);
 
             if (isPayday) _payroll.EvaluatePaydayBoundary(now, _clock.CurrentPaydayPeriod);
 
@@ -123,13 +110,7 @@ namespace Game
         private float NextDueAcrossServices(float now)
         {
             float min = float.PositiveInfinity;
-            min = Min(min, _recovery.NextDueHours());
-            min = Min(min, _training.NextDueHours());
-            min = Min(min, _sales.NextDueHours());
-            min = Min(min, _research.NextDueHours());
-            min = Min(min, _towerUpgrades.NextDueHours());
-            min = Min(min, _dungeon.NextDueHours());
-            min = Min(min, _raids.NextDueHours());
+            for (int i = 0; i < _timedProcesses.Length; i++) min = Min(min, _timedProcesses[i].NextDueHours());
             return min;
         }
 

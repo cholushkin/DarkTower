@@ -25,18 +25,18 @@ namespace Game
         /// In-game week index of the last fully paid payroll; null if never paid.
         public int? LastPaidWeek { get; private set; }
 
-        public void OpenWindow(float deadlineGameHours)
+        internal void OpenWindow(float deadlineGameHours)
         {
             DeadlineGameHours = deadlineGameHours;
             _isWindowOpen.Value = true;
         }
 
-        public void CloseWindow()
+        internal void CloseWindow()
         {
             _isWindowOpen.Value = false;
         }
 
-        public void MarkPaid(int week)
+        internal void MarkPaid(int week)
         {
             LastPaidWeek = week;
             DeadlineGameHours = null;

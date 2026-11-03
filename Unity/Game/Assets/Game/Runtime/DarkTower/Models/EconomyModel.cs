@@ -33,7 +33,7 @@ namespace Game
         public float DueGameHours { get; }
         public ReadOnlyReactiveProperty<ActivityStatus> Status => _status;
 
-        public void Complete() => _status.Value = ActivityStatus.Completed;
+        internal void Complete() => _status.Value = ActivityStatus.Completed;
     }
 
     /// Currencies and active sale operations. Gold/Crystals are HUD currencies, not inventory stacks.
@@ -56,14 +56,14 @@ namespace Game
         public ReadOnlyReactiveProperty<int> Crystals => _crystals;
         public IReadOnlyObservableList<SaleOperationModel> ActiveSales => _activeSales;
 
-        public void SetGold(int value) => _gold.Value = value;
-        public void AddGold(int delta) => _gold.Value += delta;
-        public void SetCrystals(int value) => _crystals.Value = value;
-        public void AddCrystals(int delta) => _crystals.Value += delta;
+        internal void SetGold(int value) => _gold.Value = value;
+        internal void AddGold(int delta) => _gold.Value += delta;
+        internal void SetCrystals(int value) => _crystals.Value = value;
+        internal void AddCrystals(int delta) => _crystals.Value += delta;
 
-        public void AddSale(SaleOperationModel sale) => _activeSales.Add(sale);
+        internal void AddSale(SaleOperationModel sale) => _activeSales.Add(sale);
 
-        public bool RemoveSale(SaleOperationModel sale)
+        internal bool RemoveSale(SaleOperationModel sale)
         {
             if (_activeSales.Remove(sale))
             {

@@ -24,9 +24,9 @@ namespace Game
         public ReadOnlyReactiveProperty<int> EnemyStage => _enemyStage;
         public ReadOnlyReactiveProperty<int> LootStage => _lootStage;
 
-        public void SetEnemyStage(int stage) => _enemyStage.Value = stage;
-        public void SetLootStage(int stage) => _lootStage.Value = stage;
-        public void AdvanceEnemyStage() => _enemyStage.Value++;
-        public void AdvanceLootStage() => _lootStage.Value++;
+        internal void SetEnemyStage(int stage) => _enemyStage.Value = stage;
+        internal void SetLootStage(int stage) => _lootStage.Value = stage;
+        internal void AdvanceEnemyStage() => _enemyStage.Value++;
+        internal void AdvanceLootStage() => _lootStage.Value++;
     }
 }

@@ -46,6 +46,9 @@ namespace Game
     }
 
     /// Storehouse storage and sales rules.
+    /// InitialStorageSlots is a fallback starting-capacity value only — StartingBalanceDefinition
+    /// .InitialRoomCapabilities.StorageSlots is the authoritative source and is used whenever a
+    /// StartingBalanceDefinition is assigned and its StorageSlots is non-zero (see SessionStateFactory).
     /// TODO: active-sale concurrency, the moment a stack is reserved/consumed, and half-price
     /// rounding are open design decisions.
     [CreateAssetMenu(menuName = "Dark Tower/Rules/Storehouse", fileName = "StorehouseRules")]

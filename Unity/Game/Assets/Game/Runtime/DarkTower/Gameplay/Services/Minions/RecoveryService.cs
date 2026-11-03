@@ -12,17 +12,17 @@ namespace Game
     /// is tracked independently of MinionModel.TiredSinceGameHours (which marks when Tired began, even
     /// while the minion was still busy elsewhere) and instead starts only once a minion is observed
     /// free+idle+needing a bed with none available. This avoids unfairly penalizing a minion who was
-    /// marked Tired at nightfall while still off on a multi-day raid.
+    /// marked Tired at nightfall while still off on a multi-day raid. The wait-start times themselves
+    /// live in RecoveryModel, not here, so the session stays fully inspectable from Models alone.
     ///
     /// Infirmary queue tie-break among multiple Injured waiters (also open in the design) is resolved
     /// by the same longest-waiting-first rule used for Quarters, reusing TiredSinceGameHours as the
     /// ordering key (in practice every path that sets Injured also sets Tired at the same instant).
-    public sealed class RecoveryService
+    public sealed class RecoveryService : ITimedProcess
     {
         private readonly GameSessionModel _session;
         private readonly ClockService _clock;
         private readonly ICommandPublisher _publisher;
-        private readonly Dictionary<EntityId, float> _waitingSinceHours = new Dictionary<EntityId, float>();
 
         public RecoveryService(GameSessionModel session, ClockService clock, ICommandPublisher publisher)
         {
@@ -101,7 +101,7 @@ namespace Game
             if (graceHours <= 0f) return null;
 
             float? min = null;
-            foreach (var since in _waitingSinceHours.Values)
+            foreach (var since in Recovery.WaitingSinceHoursValues)
             {
                 float due = since + graceHours;
                 if (min == null || due < min.Value) min = due;
@@ -158,7 +158,7 @@ namespace Game
             var assignment = new BedAssignmentModel(id, minion.Id, room, nowHours, nowHours + durationHours);
             Recovery.AddAssignment(assignment);
             minion.SetActivity(room == RoomId.Infirmary ? MinionActivity.Treating : MinionActivity.Resting);
-            _waitingSinceHours.Remove(minion.Id);
+            Recovery.ClearWaiting(minion.Id);
         }
 
         private float ComputeTreatmentDurationHours()
@@ -175,14 +175,8 @@ namespace Game
             {
                 var m = minions[i];
                 bool needsBed = NeedsInfirmary(m) || NeedsQuarters(m);
-                if (needsBed)
-                {
-                    if (!_waitingSinceHours.ContainsKey(m.Id)) _waitingSinceHours[m.Id] = nowHours;
-                }
-                else
-                {
-                    _waitingSinceHours.Remove(m.Id);
-                }
+                if (needsBed) Recovery.MarkWaitingIfAbsent(m.Id, nowHours);
+                else Recovery.ClearWaiting(m.Id);
             }
         }
 
@@ -199,14 +193,14 @@ namespace Game
             for (int i = 0; i < minions.Count; i++)
             {
                 var m = minions[i];
-                if (_waitingSinceHours.TryGetValue(m.Id, out var since) && nowHours - since > graceHours)
+                if (Recovery.TryGetWaitingSince(m.Id, out var since) && nowHours - since > graceHours)
                     toRemove.Add(m);
             }
 
             for (int i = 0; i < toRemove.Count; i++)
             {
                 var m = toRemove[i];
-                _waitingSinceHours.Remove(m.Id);
+                Recovery.ClearWaiting(m.Id);
                 _ = _publisher.PublishAsync(new MinionDepartedEvent(m.Id));
                 _session.Roster.Remove(m);
             }

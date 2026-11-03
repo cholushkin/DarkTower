@@ -7,7 +7,7 @@ namespace Game
     /// UnlockTrainingTransition effect carries TargetId in the same "{fromRank}-{toRank}" form as
     /// TrainingModel.TransitionKey (e.g. "1-2"), so TowerUpgradeService can unlock the matching
     /// transition on completion without a separate lookup table.
-    public sealed class TrainingService
+    public sealed class TrainingService : ITimedProcess
     {
         private readonly GameSessionModel _session;
         private readonly EconomyService _economy;

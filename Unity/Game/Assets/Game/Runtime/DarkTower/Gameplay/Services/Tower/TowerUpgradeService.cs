@@ -9,7 +9,7 @@ namespace Game
     /// Concurrency (open design question): any number of upgrades may be under construction at once
     /// — nothing in the design or catalog caps concurrent construction, so no artificial limit is
     /// imposed; this is a documented default, not an invented balance rule.
-    public sealed class TowerUpgradeService
+    public sealed class TowerUpgradeService : ITimedProcess
     {
         private readonly GameSessionModel _session;
         private readonly EconomyService _economy;
@@ -72,10 +72,10 @@ namespace Game
                 if (process.DueGameHours > nowHours) continue;
 
                 process.Complete();
-                ApplyEffects(process.UpgradeId);
+                var def = Db.GetUpgrade(process.UpgradeId);
+                UpgradeEffectApplier.Apply(_session, def);
                 Tower.MarkUpgradeCompleted(process.UpgradeId);
 
-                var def = Db.GetUpgrade(process.UpgradeId);
                 if (def != null && def.TowerXpReward > 0) Tower.AddXp(def.TowerXpReward);
 
                 Tower.RemoveInProgress(process);
@@ -114,69 +114,6 @@ namespace Game
             for (int i = 0; i < list.Count; i++)
                 if (list[i].UpgradeId == upgradeId) return true;
             return false;
-        }
-
-        private void ApplyEffects(string upgradeId)
-        {
-            var def = Db.GetUpgrade(upgradeId);
-            var effects = def != null ? def.Effects : null;
-            if (effects == null) return;
-
-            for (int i = 0; i < effects.Length; i++)
-            {
-                var effect = effects[i];
-                switch (effect.Kind)
-                {
-                    case UpgradeEffectKind.AddStorageSlots:
-                        _session.Inventory.AddSlotCapacity((int)effect.Amount);
-                        break;
-                    case UpgradeEffectKind.AddQuartersBed:
-                        _session.Recovery.AddQuartersBeds((int)effect.Amount);
-                        break;
-                    case UpgradeEffectKind.AddInfirmaryBed:
-                        _session.Recovery.AddInfirmaryBeds((int)effect.Amount);
-                        break;
-                    case UpgradeEffectKind.AddTrainingStation:
-                        _session.Training.AddStations((int)effect.Amount);
-                        break;
-                    case UpgradeEffectKind.AddDungeonCell:
-                        _session.Dungeon.AddCellCapacity((int)effect.Amount);
-                        break;
-                    case UpgradeEffectKind.UnlockTrainingTransition:
-                        UnlockTransition(effect.TargetId);
-                        break;
-                    case UpgradeEffectKind.AdvanceEnemyIntelligence:
-                        _session.Intelligence.AdvanceEnemyStage();
-                        break;
-                    case UpgradeEffectKind.AdvanceLootIntelligence:
-                        _session.Intelligence.AdvanceLootStage();
-                        break;
-                    // UnlockResearchTier is read on demand (starting tier + completed-upgrade count,
-                    // see ResearchService) rather than stored. ReduceSaleDuration/ReduceTreatmentDuration/
-                    // ReduceResearchDuration/ReduceTortureDuration/IncreaseRecruitmentChance are also
-                    // read on demand via UpgradeEffectRules against CompletedUpgradeIds, which
-                    // MarkUpgradeCompleted (above) already updated. Custom is a designer escape hatch
-                    // with no mechanics defined yet.
-                    case UpgradeEffectKind.UnlockResearchTier:
-                    case UpgradeEffectKind.ReduceSaleDuration:
-                    case UpgradeEffectKind.ReduceTreatmentDuration:
-                    case UpgradeEffectKind.ReduceResearchDuration:
-                    case UpgradeEffectKind.ReduceTortureDuration:
-                    case UpgradeEffectKind.IncreaseRecruitmentChance:
-                    case UpgradeEffectKind.Custom:
-                    default:
-                        break;
-                }
-            }
-        }
-
-        private void UnlockTransition(string targetId)
-        {
-            if (string.IsNullOrEmpty(targetId)) return;
-            var parts = targetId.Split('-');
-            if (parts.Length != 2) return;
-            if (int.TryParse(parts[0], out var from) && int.TryParse(parts[1], out var to))
-                _session.Training.UnlockTransition(from, to);
         }
     }
 }
