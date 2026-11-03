@@ -37,7 +37,7 @@ namespace Game
         public int ComputeWeeklySalary() => Roster.ComputeWeeklySalary(Db);
 
         /// Applies Tired to every owned minion, regardless of current activity/condition: nightfall
-        /// affects the whole population per the design, independent of being mid-activity.
+        /// affects the whole population independent of being mid-activity.
         public void ApplyNightfallTired(float nowHours)
         {
             var minions = Roster.Minions;

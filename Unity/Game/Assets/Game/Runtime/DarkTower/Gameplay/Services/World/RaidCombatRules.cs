@@ -2,12 +2,12 @@ using UnityEngine;
 
 namespace Game
 {
-    /// Implements the game design's PROVISIONAL combat/injury/duration formulas (design doc §10).
-    /// GlobalBalanceDefinition explicitly only stores these coefficients and says "no combat/outcome
-    /// calculation lives in the data layer" — this is that calculation, kept in one place so
-    /// RaidService (outcome/duration at launch & finish) and the injury roll at Claim use identical
-    /// math. Coefficients are read from the database and are NOT hardcoded balance values; swapping
-    /// the config asset changes behavior without touching this file.
+    /// PROVISIONAL combat/injury/duration formulas. GlobalBalanceDefinition explicitly only stores
+    /// these coefficients and says "no combat/outcome calculation lives in the data layer" — this is
+    /// that calculation, kept in one place so RaidService (outcome/duration at launch & finish) and
+    /// the injury roll at Claim use identical math. Coefficients are read from the database and are
+    /// NOT hardcoded balance values; swapping the config asset changes behavior without touching
+    /// this file.
     public static class RaidCombatRules
     {
         public static float ComputeTotalPower(RaidLaunchSnapshot snapshot, GlobalBalanceDefinition balance)

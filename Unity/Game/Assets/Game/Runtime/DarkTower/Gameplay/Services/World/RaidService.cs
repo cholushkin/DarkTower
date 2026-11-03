@@ -5,9 +5,9 @@ namespace Game
 {
     /// Raid launch validation, timed resolution, and Claim. Outcome/discoveries are fixed once at
     /// ProcessDue (no reroll on reopening the report); return conditions (Tired/independent Injured
-    /// roll) are rolled once at Claim, per the design's "apply return conditions at the specified
-    /// Claim transition" — this is a single roll either way (Claim is single-use via RaidModel's
-    /// Claimed flag), so nothing here can double-roll or reroll.
+    /// roll) are rolled once at Claim, applied exactly at that transition — this is a single roll
+    /// either way (Claim is single-use via RaidModel's Claimed flag), so nothing here can double-roll
+    /// or reroll.
     public sealed class RaidService : ITimedProcess
     {
         private readonly GameSessionModel _session;

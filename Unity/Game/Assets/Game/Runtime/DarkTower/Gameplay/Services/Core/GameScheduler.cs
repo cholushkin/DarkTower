@@ -3,15 +3,16 @@ using System;
 namespace Game
 {
     /// The single orchestrator that moves the game clock forward. Every other service only reads the
-    /// clock or stores its own Start/Due game-hours on its own Task-04 process models; this is the
-    /// one place that advances time and decides processing order.
+    /// clock or reports its own next-due instant through ITimedProcess; this is the one place that
+    /// advances time and decides processing order.
     ///
-    /// AdvanceGameTime is an internal test/debug entry point ("direct time advancement is an internal
-    /// test/debug capability only" per the design) and deliberately bypasses ClockService.IsPaused —
-    /// a developer force-advances time even while a future Payroll/Raid Report pause would otherwise
-    /// hold a real-time-driven loop. Nothing in this task drives the clock from real time, so that
-    /// distinction has no other observable effect yet; a future runtime driver is expected to check
-    /// IsPaused itself before calling in (see ClockService remarks), never here.
+    /// AdvanceGameTime is an internal test/debug entry point and deliberately bypasses
+    /// ClockService.IsPaused — a developer force-advances time even while a future Payroll/Raid
+    /// Report pause would otherwise hold a real-time-driven loop. No real-time driver exists yet, so
+    /// that distinction has no other observable effect today; a future runtime driver is expected to
+    /// check IsPaused itself before calling AdvanceGameTime (never here), converting elapsed real
+    /// seconds into game hours at a fixed ratio (e.g. 1 real minute = 1 in-game day), and to integrate
+    /// with the payday and raid-report pause lifecycle through that same IsPaused gate.
     ///
     /// Boundary-jump algorithm: repeatedly advances to the SMALLEST of (remaining target time, next
     /// nightfall, next payday boundary, the minimum "next due" reported by every timed service), then
@@ -20,8 +21,10 @@ namespace Game
     /// fixed and documented order, never skipping one. The fixed order below is a technical
     /// scheduling choice, not a gameplay-priority decision: raids never auto-credit anything at this
     /// point (only Claim does), so nothing in this order can change a gameplay outcome by being
-    /// processed before or after payday/nightfall on the same instant — see GameplayServices_README.md
-    /// for the one caveat called out there (simultaneous nightfall + bed auto-assignment ordering).
+    /// processed before or after payday/nightfall on the same instant. The one deliberate exception:
+    /// within ProcessBoundary, nightfall's effects and every ITimedProcess's due work always run
+    /// before the trailing recovery auto-assignment/departure pass, so bed assignment at a boundary
+    /// always reflects that same-instant nightfall outcome rather than racing it.
     public sealed class GameScheduler
     {
         private readonly ClockService _clock;
@@ -68,8 +71,8 @@ namespace Game
             // a squad) is picked up before new time elapses.
             _recovery.RunAutoAssignment(_clock.NowHours);
 
-            const int maxSteps = 100000; // guards against a misconfigured zero-length boundary loop
-            for (int step = 0; step < maxSteps && _clock.NowHours < target; step++)
+            const int MAX_STEPS = 100000; // guards against a misconfigured zero-length boundary loop
+            for (int step = 0; step < MAX_STEPS && _clock.NowHours < target; step++)
             {
                 float now = _clock.NowHours;
                 float next = target;

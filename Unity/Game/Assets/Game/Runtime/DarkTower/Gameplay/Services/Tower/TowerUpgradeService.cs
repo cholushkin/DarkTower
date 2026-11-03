@@ -1,10 +1,9 @@
 namespace Game
 {
     /// Room upgrade purchases and their timed construction. A purchased upgrade's gameplay effect
-    /// activates only on completion, never at purchase time (per the design's explicit "becomes
-    /// active when completed" rule). Tower XP is likewise awarded on completion, resolving the
-    /// catalog's open "purchase vs completion" question in favor of the only point the design
-    /// describes as observable ("its gameplay effect becomes active when completed").
+    /// activates only on completion, never at purchase time. Tower XP is likewise awarded on
+    /// completion — this resolves the catalog's open "purchase vs completion" question in favor of
+    /// the only point at which an upgrade's effect is actually observable.
     ///
     /// Concurrency (open design question): any number of upgrades may be under construction at once
     /// — nothing in the design or catalog caps concurrent construction, so no artificial limit is

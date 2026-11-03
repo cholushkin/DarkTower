@@ -6,10 +6,10 @@ namespace Game
     /// allocator, and disposes them all on shutdown. Holds a read-only reference to the content
     /// database; it never mutates definitions. The owning VContainer session scope disposes this.
     ///
-    /// ADDED (Task 05): IsVictory/IsBankrupt terminal-state flags. Set exactly once, only by
+    /// IsVictory/IsBankrupt are the run's terminal-state flags. Each is set exactly once, only by
     /// WorldProgressionService (victory: every mission Claimed) and PayrollService (bankruptcy:
     /// payday ends unpaid). Gameplay services consult IsTerminal to reject new player-initiated
-    /// operations once the run has ended, per the design's victory/bankruptcy end states.
+    /// operations once the run has ended.
     public sealed class GameSessionModel : ModelBase
     {
         private readonly ReactiveProperty<bool> _isVictory = new ReactiveProperty<bool>(false);

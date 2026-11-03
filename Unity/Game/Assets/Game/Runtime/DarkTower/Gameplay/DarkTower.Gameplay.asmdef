@@ -3,6 +3,7 @@
     "rootNamespace": "Game",
     "references": [
         "DarkTower.Data",
+        "DarkTower.Domain",
         "VContainer"
     ],
     "includePlatforms": [],

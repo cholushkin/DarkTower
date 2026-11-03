@@ -5,11 +5,10 @@
 // upgrade happened to be pre-completed at session start. It does not run timers or otherwise
 // orchestrate gameplay initialization.
 //
-// DECISION: initial_room_capabilities is treated as the authoritative BASE starting capacities,
-//   before any starting completed upgrade's effects are applied on top. Starting completed
-//   research is recorded (for prerequisite/ownership checks) but carries no capacity effects of its
-//   own to apply. A new session and a restored session must end up with the same Model APIs (see
-//   DataFlow).
+// InitialRoomCapabilities is the authoritative BASE starting capacities, before any starting
+// completed upgrade's effects are applied on top. Starting completed research is recorded (for
+// prerequisite/ownership checks) but carries no capacity effects of its own to apply. A new session
+// and a restored session must end up with the same Model APIs (see DataFlow.md).
 
 using System.Collections.Generic;
 

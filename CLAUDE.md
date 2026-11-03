@@ -47,16 +47,24 @@ Prefer improving an existing local package over duplicating its functionality in
 
 ## Architecture (game code)
 
-Game code lives under `Unity/Game/Assets/Game/`. Current assemblies:
+Game code lives under `Unity/Game/Assets/Game/`. Current assemblies, in reference order
+(`Data` → `Domain` → `Gameplay`; a lower layer never references a higher one):
 
 - `DarkTower.Data` (`Runtime/DarkTower/Data/`) — designer-authored `ScriptableObject` definitions
   (`DarkTowerDatabase` is the master catalog, with cached ID-based lookups) and plain data
-  records/enums. No engine-free dependencies beyond Unity; never references `DarkTower.Gameplay`.
-- `DarkTower.Gameplay` (`Runtime/DarkTower/Gameplay/`, references `DarkTower.Data` + `VContainer`) —
-  the domain/session layer:
+  records/enums. No dependencies beyond Unity; never references `DarkTower.Domain` or
+  `DarkTower.Gameplay`.
+- `DarkTower.Domain` (`Runtime/DarkTower/Domain/`, references `DarkTower.Data`) — runtime session
+  state ownership and initial-state construction:
   - `Models/` — authoritative runtime session state (`GameSessionModel` and sub-models such as
     `EconomyModel`, `MinionModel`, `WorldModel`, `TowerModel`, etc.), all deriving from `ModelBase`
-    (owns an R3 `CompositeDisposable`; disposal cascades from the session root).
+    (owns an R3 `CompositeDisposable`; disposal cascades from the session root). Write methods are
+    `internal`, visible only to `DarkTower.Gameplay`/`DarkTower.Gameplay.Tests`
+    (`InternalsVisibleTo` grants in `Domain/AssemblyInfo.cs`) — a presentation layer can only read.
+  - `Factory/SessionStateFactory.cs` — builds a fresh session's starting runtime state from config.
+  - Never references `DarkTower.Gameplay`.
+- `DarkTower.Gameplay` (`Runtime/DarkTower/Gameplay/`, references `DarkTower.Data` +
+  `DarkTower.Domain` + `VContainer`) — the service layer:
   - `Services/<Area>/` (`Core`, `Economy`, `Minions`, `Dungeon`, `Laboratory`, `Payroll`, `Tower`,
     `World`) — operations, validation, and coordinated mutation of Models. This is where gameplay
     rules from `DarkTowerGameDesign.md` get implemented.
@@ -70,17 +78,17 @@ Game code lives under `Unity/Game/Assets/Game/`. Current assemblies:
     the headless path.
   - `Events/DomainEvents.cs` — VitalRouter command/event types for decoupled cross-feature
     notifications (see rMVVM.md §4 for when to use direct calls vs. VitalRouter).
-- `Factory/SessionStateFactory.cs` — builds a fresh session's starting runtime state from config.
-- No presentation/UI/ViewModel layer exists yet in `Assets/Game` — only `Data`, `Factory`, and
-  `Gameplay` (domain). When adding UI, follow rMVVM.md/ReactiveWindowSystem.md and keep it out of the
-  `DarkTower.Gameplay` assembly.
+- No presentation/UI/ViewModel layer exists yet in `Assets/Game` — only `Data`, `Domain`, and
+  `Gameplay`. When adding UI, follow rMVVM.md/ReactiveWindowSystem.md and keep it out of these three
+  assemblies.
 - `Editor/DarkTower/` (`DarkTower.Data.Editor`, references `DarkTower.Data` only) — editor-time
   tooling, e.g. `DarkTowerDataValidator` for catalog integrity checks.
-- `Tests/DarkTower/EditMode/` (`DarkTower.Gameplay.Tests`) — NUnit EditMode tests exercising the
-  headless `GameplaySessionComposer` path; organized one file per gameplay area plus
+- `Tests/DarkTower/EditMode/` (`DarkTower.Gameplay.Tests`, references `DarkTower.Data` +
+  `DarkTower.Domain` + `DarkTower.Gameplay`) — NUnit EditMode tests exercising the headless
+  `GameplaySessionComposer` path; organized one file per gameplay area plus
   `EndToEndScenarioTests`, `IntegrityTests`, and `GameplayTestFixtures` for shared setup.
 
-Keep gameplay/domain logic (Models, Services) independent of any future UI/presentation code.
+Keep domain/gameplay logic (Models, Services) independent of any future UI/presentation code.
 
 ## Commands
 

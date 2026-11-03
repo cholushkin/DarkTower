@@ -3,6 +3,7 @@
     "rootNamespace": "Game.Tests",
     "references": [
         "DarkTower.Data",
+        "DarkTower.Domain",
         "DarkTower.Gameplay",
         "VContainer",
         "UnityEngine.TestRunner",

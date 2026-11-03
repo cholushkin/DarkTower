@@ -1,0 +1,16 @@
+{
+    "name": "DarkTower.Domain",
+    "rootNamespace": "Game",
+    "references": [
+        "DarkTower.Data"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
