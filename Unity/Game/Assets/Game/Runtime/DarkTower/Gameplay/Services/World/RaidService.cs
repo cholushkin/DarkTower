@@ -208,13 +208,16 @@ namespace Game
         /// fails with "already_claimed" and changes nothing.
         public OperationResult TryClaimRaid(string missionId, EntityId raidId, IReadOnlyList<EntityId> selectedCopyIds)
         {
-            if (_session.IsTerminal) return OperationResult.Fail("game_over");
-
             var progress = _session.World.FindMission(missionId);
             var raid = progress?.CurrentRaid.CurrentValue;
             if (raid == null || !raid.Id.Equals(raidId)) return OperationResult.Fail("raid_not_found");
             if (raid.Claimed.CurrentValue) return OperationResult.Fail("already_claimed");
             if (raid.Outcome.CurrentValue == RaidOutcome.Pending) return OperationResult.Fail("raid_not_finished");
+
+            // Checked only after the identity/idempotency checks above: claiming the last mission can
+            // itself end the game (Victory), and a repeat Claim of that same raid afterward must still
+            // report "already_claimed", not a generic game_over, since it mutates nothing either way.
+            if (_session.IsTerminal) return OperationResult.Fail("game_over");
 
             var discovered = raid.DiscoveredItems;
             var selectedSet = new HashSet<EntityId>();

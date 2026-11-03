@@ -39,6 +39,13 @@ namespace Game.Tests
             Assert.IsFalse(sameWeekRelaunch.Success);
             Assert.AreEqual("mission_not_launchable", sameWeekRelaunch.Reason);
 
+            // Pay payroll before advancing a full week: that advance crosses a payday boundary, and an
+            // unpaid one declares bankruptcy, which would block the relaunch via the same IsTerminal
+            // guard the Victory comment above already calls out — unrelated to the cooldown this test
+            // is actually checking.
+            var pay = session.Payroll.TryPayAll();
+            Assert.IsTrue(pay.Success);
+
             // Advance well into the next in-game week.
             session.Scheduler.AdvanceGameTime(7f * 24f);
 

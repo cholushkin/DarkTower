@@ -57,11 +57,15 @@ namespace Game.Tests
 
             int goldBefore = session.Economy.Gold.CurrentValue;
             var minion = session.Minions.Roster.Minions[0];
+            // Not necessarily Idle here: nightfall/recovery keep cycling minions through
+            // Tired/Resting in the background even after terminal (that processing is intentionally
+            // not gated by IsTerminal). What matters is that the rejected raid itself changes nothing.
+            var activityBeforeRaid = minion.Activity.CurrentValue;
 
             var raid = session.Raids.TryStartRaid(h.Mission.Id, new List<EntityId> { minion.Id });
             Assert.IsFalse(raid.Success);
             Assert.AreEqual("game_over", raid.Reason);
-            Assert.AreEqual(MinionActivity.Idle, minion.Activity.CurrentValue);
+            Assert.AreEqual(activityBeforeRaid, minion.Activity.CurrentValue, "A rejected raid must not change the minion's activity.");
 
             var upgrade = session.TowerUpgrades.TryPurchaseUpgrade(h.ExtraBedUpgrade.Id);
             Assert.IsFalse(upgrade.Success);
