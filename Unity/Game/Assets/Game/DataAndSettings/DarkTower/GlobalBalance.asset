@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27cdd13284e7eee4eb98eea70c48f0d0, type: 3}
+  m_Name: GlobalBalance
+  m_EditorClassIdentifier: DarkTower.Data::Game.GlobalBalanceDefinition
+  realSecondsPerGameDay: 60
+  gameHoursPerDay: 24
+  daysPerWeek: 7
+  paydayIntervalDays: 7
+  attackWeight: 0.65
+  defenseWeight: 0.35
+  rankPowerBonusPerRank: 0.1
+  failureCurveSlope: 2
+  injuryUnderpowerWeight: 0.2
+  injuryRankReduction: 0.02
+  injuryDefenseReduction: 0.005
+  injuryMin: 0.01
+  injuryMax: 0.9
+  durationSquadSizeReduction: 0.04
+  durationAverageRankReduction: 0.01
+  durationMinFactor: 0.8

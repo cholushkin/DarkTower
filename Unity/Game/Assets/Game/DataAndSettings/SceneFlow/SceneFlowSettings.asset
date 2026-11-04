@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bbafe89b8bbf874c9f4d4df3407adbb, type: 3}
+  m_Name: SceneFlowSettings
+  m_EditorClassIdentifier: GameLib.SceneFlow::GameLib.SceneFlow.SceneFlowSettings
+  <DefaultProfile>k__BackingField: {fileID: 11400000, guid: 56353b945f0301449bacdfb7b761140b, type: 2}
+  <DefaultIsolationInstallers>k__BackingField: []
+  _bootstrapScenePath: Assets/Game/Scenes/Boot.unity
+  _developmentHostScenePath: 
+  _bootstrapScene: {fileID: 102900000, guid: 43e009b99ed72f448a451505e9b5db5f, type: 3}
+  _developmentHostScene: {fileID: 0}

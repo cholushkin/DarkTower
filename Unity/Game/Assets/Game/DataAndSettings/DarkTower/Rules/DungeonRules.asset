@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 425fa71d23ef1e14e881369677d640c8, type: 3}
+  m_Name: DungeonRules
+  m_EditorClassIdentifier: DarkTower.Data::Game.DungeonRulesDefinition
+  baseProcessingDuration:
+    value: 0
+    unit: 0
+  rankDurationModifiers: []
+  rankRecruitmentModifiers: []
+  outcomeDistribution:
+    recruitmentWeight: 0
+    interrogationWeight: 0
+    deathWeight: 0
+  recruitedTired: 1
+  recruitedInjuredProbability:
+    value: 0.5
+  interrogationEvents: []
+  sortHighRankFirst: 0

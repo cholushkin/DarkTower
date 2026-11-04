@@ -104,7 +104,7 @@
       "dependencies": {}
     },
     "com.qcat.feelmotion": {
-      "version": "file:D:/projects/dev/DarkTower/LocalPackages/FeelMotion",
+      "version": "file:../../../LocalPackages/FeelMotion",
       "depth": 0,
       "source": "local",
       "dependencies": {}

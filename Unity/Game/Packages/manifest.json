@@ -13,7 +13,7 @@
     "com.github-glitchenzo.nugetforunity": "https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity",
     "com.mischief.markdownviewer": "https://github.com/gwaredd/UnityMarkdownViewer.git",
     "com.qcat.dev-conventions": "file:../../../LocalPackages/dev-conventions",
-    "com.qcat.feelmotion": "file:D:/projects/dev/DarkTower/LocalPackages/FeelMotion",
+    "com.qcat.feelmotion": "file:../../../LocalPackages/FeelMotion",
     "com.qcat.gamelib": "file:../../../LocalPackages/gamelib",
     "com.qcat.rmvvm": "file:../../../LocalPackages/rmvvm",
     "com.qcat.versionhistory": "file:../../../LocalPackages/VersionHistory",
@@ -65,5 +65,8 @@
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0"
-  }
+  },
+  "testables": [
+    "com.qcat.gamelib"
+  ]
 }
