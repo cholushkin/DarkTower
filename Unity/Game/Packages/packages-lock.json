@@ -74,7 +74,7 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "a9e27c03d411d2fca01cc7410c24c97cd77cb539"
+      "hash": "a77a1b4a89824fb6df293099de3060daf2a432c1"
     },
     "com.cysharp.zlogger": {
       "version": "https://github.com/Cysharp/ZLogger.git?path=src/ZLogger.Unity/Assets/ZLogger.Unity",
@@ -99,6 +99,12 @@
     },
     "com.qcat.dev-conventions": {
       "version": "file:../../../LocalPackages/dev-conventions",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {}
+    },
+    "com.qcat.feelmotion": {
+      "version": "file:D:/projects/dev/DarkTower/LocalPackages/FeelMotion",
       "depth": 0,
       "source": "local",
       "dependencies": {}

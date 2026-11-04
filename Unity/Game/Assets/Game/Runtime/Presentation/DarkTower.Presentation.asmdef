@@ -1,0 +1,22 @@
+{
+    "name": "DarkTower.Presentation",
+    "rootNamespace": "Game",
+    "references": [
+        "DarkTower.Data",
+        "DarkTower.Domain",
+        "VContainer",
+        "DarkTower.Gameplay",
+        "UniTask",
+        "LitMotion",
+        "Unity.TextMeshPro"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

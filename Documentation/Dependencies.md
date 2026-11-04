@@ -4,7 +4,7 @@ Legend: `+` added by default; `-` not added by default;
 - GameLib ( UPM git install: https://github.com/cholushkin/gamelib.git )
   + alchemy
   + vcontainer
-  + unitask
+  + unitask ( https://github.com/cysharp/unitask )
   + litmotion
   + zlogger
   + vitalrouter
