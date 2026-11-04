@@ -14,22 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
   m_GroupName: Default Local Group
   m_GUID: 483013183bd3a1549bda8431ef208b37
-  m_SerializeEntries:
-  - m_GUID: 87e1918bb315ba64bae43480d958c570
-    m_Address: Assets/Game/Scenes/Game.unity
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 91572baeda47149459ee2f3226a92691
-    m_Address: Assets/Game/Scenes/BaseUI.unity
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e9d4b3f151caf7741a88b939c689f655
-    m_Address: Assets/Game/Scenes/System.unity
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: ddd7ea837918d36469b5d6f5f6c75bd1, type: 2}
   m_SchemaSet:
