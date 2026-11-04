@@ -120,6 +120,12 @@
         "com.unity.ugui": "1.0.0"
       }
     },
+    "com.qcat.primitives-pack-a": {
+      "version": "file:../../../LocalPackages/primitives-pack-a",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {}
+    },
     "com.qcat.rmvvm": {
       "version": "file:../../../LocalPackages/rmvvm",
       "depth": 0,
