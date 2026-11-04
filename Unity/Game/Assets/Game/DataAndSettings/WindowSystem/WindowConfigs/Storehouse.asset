@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: accc3c4bb1da17e469d6da5709bedae2, type: 3}
   m_Name: Storehouse
   m_EditorClassIdentifier: RMVVM::WindowConfig
-  DefaultContainerId: Storehouse
+  DefaultContainerId: ModalOverlay
   DefaultStackMode: 0
   Prefab: {fileID: 7186357165572249380, guid: 9f4ca88b7936bd94698000604939ba76, type: 3}

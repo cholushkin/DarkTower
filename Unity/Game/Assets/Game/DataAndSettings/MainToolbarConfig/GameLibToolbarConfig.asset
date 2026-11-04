@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da7cbd8c5aafff745a3a43a526048ed0, type: 3}
   m_Name: GameLibToolbarConfig
   m_EditorClassIdentifier: GameLib.Editor::GameLib.Editor.GameLibToolbarConfig
-  label: "\U0001F54CDarkTower"
+  label: "\u2660\uFE0FDarkTower"
   buttons: []

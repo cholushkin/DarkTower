@@ -31,9 +31,9 @@ MonoBehaviour:
   events: []
   worldMap: {fileID: 11400000, guid: 2a33a2452062ce546b8691ac49ee16f5, type: 2}
   globalBalance: {fileID: 0}
-  startingBalance: {fileID: 0}
+  startingBalance: {fileID: 11400000, guid: f724500562b784d4ebaaa35ce8d9d51a, type: 2}
   towerLevelProgression: {fileID: 0}
-  storehouseRules: {fileID: 0}
+  storehouseRules: {fileID: 11400000, guid: 11e81ee7401fa5a4eb712f4fcbc97d15, type: 2}
   recoveryRules: {fileID: 0}
   dungeonRules: {fileID: 0}
   warRoomIntelligence: {fileID: 0}

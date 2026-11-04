@@ -121,7 +121,7 @@
       }
     },
     "com.qcat.primitives-pack-a": {
-      "version": "file:../../..//LocalPackages/primitives-pack-a",
+      "version": "file:../../../LocalPackages/primitives-pack-a",
       "depth": 0,
       "source": "local",
       "dependencies": {}

@@ -18,4 +18,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4ebfa916676ddf4438262caf7d7cf291, type: 2}
   <ActiveScene>k__BackingField: {fileID: 11400000, guid: 4ebfa916676ddf4438262caf7d7cf291, type: 2}
   <Installers>k__BackingField: []
-  <ParentOverrides>k__BackingField: []
+  <ParentOverrides>k__BackingField:
+  - <Child>k__BackingField: {fileID: 11400000, guid: 4b87490434b53654b935e53aaa4b0573, type: 2}
+    <Parent>k__BackingField: {fileID: 11400000, guid: 4ebfa916676ddf4438262caf7d7cf291, type: 2}

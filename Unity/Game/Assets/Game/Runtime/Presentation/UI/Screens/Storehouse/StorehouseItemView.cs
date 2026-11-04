@@ -1,26 +1,35 @@
+using System;
+using R3;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Game
 {
-    public class StorehouseItemView : MonoBehaviour
+    public class StorehouseItemView : MonoBehaviour, IDisposable
     {
         [SerializeField] private Image _icon;
         [SerializeField] private TMP_Text _name;
         [SerializeField] private TMP_Text _quantity;
 
-        public void SetIcon(Sprite icon)
+        private IDisposable _quantitySubscription;
+
+        public void Bind(ItemStackModel stack)
         {
-            _icon.sprite = icon;
+            _icon.sprite = stack.Item.Icon;
+            _name.text = stack.Item.DisplayName;
+            SetQuantity(stack.Quantity.CurrentValue);
+
+            _quantitySubscription = stack.Quantity.Subscribe(SetQuantity);
         }
 
-        public void SetName(string itemName)
+        public void Dispose()
         {
-            _name.text = itemName;
+            _quantitySubscription?.Dispose();
+            _quantitySubscription = null;
         }
 
-        public void SetQuantity(int quantity)
+        private void SetQuantity(int quantity)
         {
             _quantity.text = quantity.ToString();
         }

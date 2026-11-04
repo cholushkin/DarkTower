@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Cow
   m_EditorClassIdentifier: DarkTower.Data::Game.ItemDefinition
   itemId: Cow
-  displayName: 
-  description: 
-  icon: {fileID: 0}
+  displayName: Cow
+  description: qweqweqw
+  icon: {fileID: -182289362, guid: 6dc9a95a8e6d00e40b3c795dcf1dc56a, type: 3}
   tags: 0
   maxStackSize: 1
   carrySize: 1
-  sellPriceGold: 0
+  sellPriceGold: 111
