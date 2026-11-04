@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: RMVVM::WindowConfig
   DefaultContainerId: Storehouse
   DefaultStackMode: 0
-  Prefab: {fileID: 0}
+  Prefab: {fileID: 7186357165572249380, guid: 9f4ca88b7936bd94698000604939ba76, type: 3}

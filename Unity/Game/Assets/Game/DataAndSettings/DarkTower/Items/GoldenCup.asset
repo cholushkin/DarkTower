@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: GoldenCup
   m_EditorClassIdentifier: DarkTower.Data::Game.ItemDefinition
   itemId: GoldenCup
-  displayName: 
+  displayName: Golden Cup
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: -483827029, guid: 6dc9a95a8e6d00e40b3c795dcf1dc56a, type: 3}
   tags: 1
-  maxStackSize: 1
+  maxStackSize: 5
   carrySize: 1
   sellPriceGold: 0

@@ -18,17 +18,35 @@ MonoBehaviour:
   icon: {fileID: 0}
   requiredPower: 0
   baseDuration:
-    value: 0
+    value: 36
     unit: 0
   baseInjuryChance:
-    value: 0
+    value: 0.6
   goldRange:
-    min: 0
-    max: 0
+    min: 500
+    max: 2000
   crystalRange:
-    min: 0
-    max: 0
-  itemRewards: []
+    min: 5
+    max: 20
+  itemRewards:
+  - item: {fileID: 11400000, guid: 9a066d696b0d0104782bb4b6abdb9aed, type: 2}
+    countRange:
+      min: 0
+      max: 0
+    dropChance:
+      value: 0
+  - item: {fileID: 0}
+    countRange:
+      min: 0
+      max: 0
+    dropChance:
+      value: 0
+  - item: {fileID: 0}
+    countRange:
+      min: 0
+      max: 0
+    dropChance:
+      value: 0
   prisonerCountRange:
     min: 0
     max: 0

@@ -8,7 +8,8 @@
         "DarkTower.Gameplay",
         "UniTask",
         "LitMotion",
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "RMVVM"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

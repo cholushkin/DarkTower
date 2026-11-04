@@ -21,7 +21,8 @@ MonoBehaviour:
   items:
   - {fileID: 11400000, guid: 2d12f3dcdc97d0444a3749dfc7827a37, type: 2}
   - {fileID: 11400000, guid: 9a066d696b0d0104782bb4b6abdb9aed, type: 2}
-  missions: []
+  missions:
+  - {fileID: 11400000, guid: a21f75b5e1872fb4383c54ed61052eae, type: 2}
   rooms: []
   roomUpgrades: []
   trainingTransitions: []

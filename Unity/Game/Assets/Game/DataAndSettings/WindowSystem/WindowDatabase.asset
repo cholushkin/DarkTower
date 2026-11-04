@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4186d3e35d0cd3b458e87d4d89255426, type: 3}
   m_Name: WindowDatabase
   m_EditorClassIdentifier: RMVVM::Game.UI.WindowSystem.WindowDatabase
-  Configs: []
+  Configs:
+  - {fileID: 11400000, guid: a7f5b896e70c6a14491df98ca372f841, type: 2}

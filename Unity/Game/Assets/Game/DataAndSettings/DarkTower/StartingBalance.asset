@@ -12,21 +12,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 307b91994708de64b83062b5b634c698, type: 3}
   m_Name: StartingBalance
   m_EditorClassIdentifier: DarkTower.Data::Game.StartingBalanceDefinition
-  startingGold: 0
-  startingCrystals: 0
+  startingGold: 3000
+  startingCrystals: 10
   startingMinions:
   - rank: 0
     conditions: 0
-  startingItemStacks: []
+  - rank: 0
+    conditions: 0
+  - rank: 0
+    conditions: 0
+  startingItemStacks:
+  - item: {fileID: 11400000, guid: 2d12f3dcdc97d0444a3749dfc7827a37, type: 2}
+    amount: 2
   initialRoomCapabilities:
-    storageSlots: 0
-    quartersBeds: 0
-    infirmaryBeds: 0
-    trainingStations: 0
-    dungeonCells: 0
+    storageSlots: 10
+    quartersBeds: 5
+    infirmaryBeds: 2
+    trainingStations: 2
+    dungeonCells: 2
     unlockedResearchTier: 0
   startingCompletedUpgrades: []
   startingCompletedResearch: []
   startingTowerXp: 0
-  startingWorldUnlocks: []
+  startingWorldUnlocks:
+  - mission: {fileID: 11400000, guid: a21f75b5e1872fb4383c54ed61052eae, type: 2}
+    initialState: 1
   startingSecretFlags: []
