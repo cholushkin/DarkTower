@@ -46,8 +46,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a4d54ae93e0b29047a9bf1b1c658ffdc, type: 2}
   missions:
   - {fileID: 11400000, guid: a21f75b5e1872fb4383c54ed61052eae, type: 2}
-  rooms: []
-  roomUpgrades: []
+  rooms:
+  - {fileID: 11400000, guid: 3deba417d547b0243b842f9ca7ee4b8b, type: 2}
+  roomUpgrades:
+  - {fileID: 11400000, guid: 957d903e2323b3244a2b226363693cf2, type: 2}
   trainingTransitions: []
   research: []
   rewardTables: []
@@ -55,7 +57,7 @@ MonoBehaviour:
   worldMap: {fileID: 11400000, guid: 2a33a2452062ce546b8691ac49ee16f5, type: 2}
   globalBalance: {fileID: 11400000, guid: d78ce16832f45444ba2d0931863b3de0, type: 2}
   startingBalance: {fileID: 11400000, guid: f724500562b784d4ebaaa35ce8d9d51a, type: 2}
-  towerLevelProgression: {fileID: 0}
+  towerLevelProgression: {fileID: 11400000, guid: 1acc4d4dd724913439851fb858486219, type: 2}
   storehouseRules: {fileID: 11400000, guid: 11e81ee7401fa5a4eb712f4fcbc97d15, type: 2}
   recoveryRules: {fileID: 0}
   dungeonRules: {fileID: 0}

@@ -12,4 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b083099817ccd17f71d9d060230a8194, type: 3}
   m_Name: TowerLevelProgression
   m_EditorClassIdentifier: DarkTower.Data::Game.TowerLevelProgressionDefinition
-  levels: []
+  levels:
+  - level: 1
+    xpRequired: 1000
+  - level: 2
+    xpRequired: 2000
+  - level: 3
+    xpRequired: 5000
