@@ -109,6 +109,12 @@
       "source": "local",
       "dependencies": {}
     },
+    "com.qcat.fonts-pack-a": {
+      "version": "file:../../../LocalPackages/fonts-pack-a",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {}
+    },
     "com.qcat.gamelib": {
       "version": "file:../../../LocalPackages/gamelib",
       "depth": 0,

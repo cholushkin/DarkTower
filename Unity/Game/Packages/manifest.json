@@ -14,6 +14,7 @@
     "com.mischief.markdownviewer": "https://github.com/gwaredd/UnityMarkdownViewer.git",
     "com.qcat.dev-conventions": "file:../../../LocalPackages/dev-conventions",
     "com.qcat.feelmotion": "file:../../../LocalPackages/FeelMotion",
+    "com.qcat.fonts-pack-a": "file:../../../LocalPackages/fonts-pack-a",
     "com.qcat.gamelib": "file:../../../LocalPackages/gamelib",
     "com.qcat.primitives-pack-a": "file:../../../LocalPackages/primitives-pack-a",
     "com.qcat.rmvvm": "file:../../../LocalPackages/rmvvm",
