@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Alchemy.Inspector;
 using UnityEngine;
 
 namespace Game
@@ -108,6 +109,73 @@ namespace Game
                 }
             }
             return cache.TryGetValue(id, out var value) ? value : null;
+        }
+
+        [Button]
+        private void RebuildCaches()
+        {
+            InvalidateCaches();
+            Debug.Log("[DarkTowerDatabase] Caches invalidated; will rebuild lazily on next lookup.", this);
+        }
+
+        [Button]
+        private void PrintCatalogSummary()
+        {
+            Debug.Log($"[DarkTowerDatabase] ranks={ranks?.Length ?? 0} items={items?.Length ?? 0} " +
+                $"missions={missions?.Length ?? 0} rooms={rooms?.Length ?? 0} roomUpgrades={roomUpgrades?.Length ?? 0} " +
+                $"trainingTransitions={trainingTransitions?.Length ?? 0} research={research?.Length ?? 0} " +
+                $"rewardTables={rewardTables?.Length ?? 0} events={events?.Length ?? 0}", this);
+        }
+
+        [Button]
+        private void PrintItemsInfo()
+        {
+            if (items == null || items.Length == 0)
+            {
+                Debug.Log("[DarkTowerDatabase] No items in catalog.", this);
+                return;
+            }
+
+            foreach (ItemTag tag in System.Enum.GetValues(typeof(ItemTag)))
+            {
+                if (tag == ItemTag.None) continue;
+                int count = 0;
+                foreach (var item in items)
+                    if (item != null && (item.Tags & tag) != 0) count++;
+                Debug.Log($"[DarkTowerDatabase] Tag {tag}: {count} item(s).", this);
+            }
+
+            ItemDefinition cheapest = null;
+            ItemDefinition mostExpensive = null;
+            foreach (var item in items)
+            {
+                if (item == null) continue;
+                if (cheapest == null || item.BaseValueGold < cheapest.BaseValueGold) cheapest = item;
+                if (mostExpensive == null || item.BaseValueGold > mostExpensive.BaseValueGold) mostExpensive = item;
+            }
+
+            if (cheapest != null)
+                Debug.Log($"[DarkTowerDatabase] Cheapest item: '{cheapest.Id}' ({cheapest.BaseValueGold}g).", this);
+            if (mostExpensive != null)
+                Debug.Log($"[DarkTowerDatabase] Most expensive item: '{mostExpensive.Id}' ({mostExpensive.BaseValueGold}g).", this);
+        }
+
+        [Button]
+        private void PrintMissionsInfo()
+        {
+            if (missions == null || missions.Length == 0)
+            {
+                Debug.Log("[DarkTowerDatabase] No missions in catalog.", this);
+                return;
+            }
+
+            foreach (var mission in missions)
+            {
+                if (mission == null) continue;
+                Debug.Log($"[DarkTowerDatabase] Mission '{mission.Id}': gold={mission.GoldRange.Min}-{mission.GoldRange.Max} " +
+                    $"crystals={mission.CrystalRange.Min}-{mission.CrystalRange.Max} " +
+                    $"itemRewards={mission.ItemRewards?.Length ?? 0} prisoners={mission.PrisonerCountRange.Min}-{mission.PrisonerCountRange.Max}", this);
+            }
         }
     }
 }

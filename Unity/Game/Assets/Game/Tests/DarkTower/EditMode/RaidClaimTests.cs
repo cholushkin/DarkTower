@@ -1,11 +1,51 @@
 using System.Collections.Generic;
 using NUnit.Framework;
+using UnityEngine;
 
 namespace Game.Tests
 {
     public class RaidClaimTests
     {
         private static List<EntityId> Squad(params EntityId[] ids) => new List<EntityId>(ids);
+
+        private static ItemDefinition NewItem(int maxStackSize)
+        {
+            var item = ScriptableObject.CreateInstance<ItemDefinition>();
+            GameplayTestFixtures.SetField(item, "maxStackSize", maxStackSize);
+            return item;
+        }
+
+        [Test]
+        public void CopiesOfAHighStackSizeItemShareOneCarrySlot()
+        {
+            var item = NewItem(maxStackSize: 10);
+            var copies = new List<DiscoveredItemCopy>
+            {
+                new DiscoveredItemCopy(new EntityId(1), item, false),
+                new DiscoveredItemCopy(new EntityId(2), item, false),
+                new DiscoveredItemCopy(new EntityId(3), item, false),
+            };
+
+            var selected = RaidClaimPolicy.DefaultPreselect(copies, carryLimit: 1);
+
+            Assert.AreEqual(3, selected.Count, "All three copies stack into a single slot, so a 1-slot budget fits every one of them.");
+        }
+
+        [Test]
+        public void SecondCopyOfASingleStackItemNeedsASecondSlot()
+        {
+            var item = NewItem(maxStackSize: 1);
+            var copies = new List<DiscoveredItemCopy>
+            {
+                new DiscoveredItemCopy(new EntityId(1), item, false),
+                new DiscoveredItemCopy(new EntityId(2), item, false),
+            };
+
+            var selected = RaidClaimPolicy.DefaultPreselect(copies, carryLimit: 1);
+
+            Assert.AreEqual(1, selected.Count, "Each copy of a max_stack_size=1 item needs its own slot; only one fits a 1-slot budget.");
+            Assert.AreEqual(copies[0].Id, selected[0]);
+        }
 
         [Test]
         public void EmptySquadIsRejected()

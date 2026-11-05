@@ -18,5 +18,4 @@ MonoBehaviour:
   icon: {fileID: -1861689271, guid: 07ff326d80abf8d40857c68e75eb5f3f, type: 3}
   tags: 0
   maxStackSize: 5
-  carrySize: 1
-  sellPriceGold: 0
+  baseValueGold: 0

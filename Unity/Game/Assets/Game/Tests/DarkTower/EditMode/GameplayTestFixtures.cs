@@ -108,8 +108,7 @@ namespace Game.Tests
                 SetField(so, "displayName", "Wood");
                 SetField(so, "tags", ItemTag.Material);
                 SetField(so, "maxStackSize", 10);
-                SetField(so, "carrySize", 1);
-                SetField(so, "sellPriceGold", 2);
+                SetField(so, "baseValueGold", 2);
             });
             h.TreasureItem = NewSo<ItemDefinition>(so =>
             {
@@ -117,8 +116,7 @@ namespace Game.Tests
                 SetField(so, "displayName", "Golden Cup");
                 SetField(so, "tags", ItemTag.Treasure);
                 SetField(so, "maxStackSize", 5);
-                SetField(so, "carrySize", 1);
-                SetField(so, "sellPriceGold", 20);
+                SetField(so, "baseValueGold", 20);
             });
 
             var itemReward = NewStruct<ItemRewardEntry>(

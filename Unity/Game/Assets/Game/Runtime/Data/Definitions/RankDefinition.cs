@@ -1,3 +1,4 @@
+using Alchemy.Inspector;
 using UnityEngine;
 
 namespace Game
@@ -20,5 +21,12 @@ namespace Game
         public int Defense => defense;
         public int SalaryGoldPerWeek => salaryGoldPerWeek;
         public float CarryCapacity => carryCapacity;
+
+        [Button]
+        private void PrintInfo()
+        {
+            Debug.Log($"[Rank {rank}] '{displayName}' attack={attack} defense={defense} " +
+                $"salaryGoldPerWeek={salaryGoldPerWeek} carryCapacity={carryCapacity}", this);
+        }
     }
 }

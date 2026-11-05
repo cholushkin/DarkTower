@@ -34,7 +34,7 @@ namespace Game
 
             int quantity = stack.Quantity.CurrentValue;
             if (quantity <= 0) return OperationResult<EntityId>.Fail("empty_stack");
-            int grossValueGold = quantity * item.SellPriceGold;
+            int grossValueGold = quantity * item.BaseValueGold;
 
             var removal = _inventory.TryRemoveStack(stackId);
             if (!removal.Success) return OperationResult<EntityId>.Fail(removal.Reason);

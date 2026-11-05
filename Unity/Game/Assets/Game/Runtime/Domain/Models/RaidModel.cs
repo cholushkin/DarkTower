@@ -40,8 +40,9 @@ namespace Game
         public int SquadSize => Members?.Length ?? 0;
     }
 
-    /// A single discovered physical item copy shown in the Raid Report. One selectable icon per copy
-    /// (distinct from how copies later stack in inventory). Selection costs carry_size per copy.
+    /// A single discovered physical item copy shown in the Raid Report. One selectable icon per copy;
+    /// RaidCarryRules groups selected copies into stacks (by max_stack_size) to compute the carry
+    /// slots a selection costs, the same accounting Storehouse uses for stored stacks.
     public sealed class DiscoveredItemCopy : ModelBase
     {
         private readonly ReactiveProperty<bool> _selected;
@@ -57,7 +58,6 @@ namespace Game
         public EntityId Id { get; }
         public ItemDefinition Item { get; }
         public ReadOnlyReactiveProperty<bool> Selected => _selected;
-        public int CarrySize => Item != null ? Item.CarrySize : 0;
 
         internal void SetSelected(bool selected) => _selected.Value = selected;
     }
@@ -137,13 +137,14 @@ namespace Game
         /// Fixes a failed result: no discoveries.
         internal void ResolveFailure() => _outcome.Value = RaidOutcome.Failure;
 
-        /// Total carry size of currently selected copies; must not exceed CarryLimit.
+        /// Total carry slots used by currently selected copies; must not exceed CarryLimit. Copies of
+        /// the same item stack by its max_stack_size before costing a slot, exactly like Storehouse.
         public int SelectedCarryUsed()
         {
-            int used = 0;
+            var selectedItems = new List<ItemDefinition>();
             for (int i = 0; i < _discoveredItems.Count; i++)
-                if (_discoveredItems[i].Selected.CurrentValue) used += _discoveredItems[i].CarrySize;
-            return used;
+                if (_discoveredItems[i].Selected.CurrentValue) selectedItems.Add(_discoveredItems[i].Item);
+            return RaidCarryRules.SlotsUsed(selectedItems);
         }
 
         protected override void OnDispose()

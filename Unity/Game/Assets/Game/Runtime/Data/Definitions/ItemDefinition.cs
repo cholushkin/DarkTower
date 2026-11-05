@@ -1,3 +1,4 @@
+using Alchemy.Inspector;
 using UnityEngine;
 
 namespace Game
@@ -13,8 +14,7 @@ namespace Game
         [SerializeField] private Sprite icon;
         [SerializeField] private ItemTag tags;
         [SerializeField, Min(1)] private int maxStackSize = 1;
-        [SerializeField, Min(1)] private int carrySize = 1;
-        [SerializeField, Min(0)] private int sellPriceGold;
+        [SerializeField, Min(0)] private int baseValueGold;
 
         public string Id => itemId;
         public string DisplayName => displayName;
@@ -22,10 +22,16 @@ namespace Game
         public Sprite Icon => icon;
         public ItemTag Tags => tags;
         public int MaxStackSize => maxStackSize;
-        public int CarrySize => carrySize;
-        public int SellPriceGold => sellPriceGold;
+        public int BaseValueGold => baseValueGold;
 
         /// Whether this item appears under the Treasures inventory filter.
         public bool IsTreasure => (tags & ItemTag.Treasure) != 0;
+
+        [Button]
+        private void PrintInfo()
+        {
+            Debug.Log($"[Item:{itemId}] '{displayName}' tags={tags} maxStackSize={maxStackSize} " +
+                $"baseValueGold={baseValueGold} isTreasure={IsTreasure}", this);
+        }
     }
 }

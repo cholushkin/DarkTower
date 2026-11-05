@@ -309,21 +309,23 @@ Reward generation is based on mission configuration and does not scale with the 
 
 `carry_limit = floor(sum(rank_data[minion.rank].carry_capacity for each squad member))`
 
-- Each physical item copy costs its `carry_size` against this budget.
+`carry_limit` is a count of **carry slots** — the same unit as Storehouse storage slots.
+
 - A successful raid shows **one selectable icon per discovered physical item copy**, including duplicates.
+- Selected copies of the same item type stack by that item's `max_stack_size`, exactly like Storehouse; each resulting stack costs **one carry slot**. Selecting another copy of an item already selected is free until its current stack is full.
 - The game preselects a valid subset of copies within the budget.
-- The player may deselect and reselect individual copies; their total Carry Size must not exceed the budget.
+- The player may deselect and reselect individual copies; the resulting stacks' total slot count must not exceed the budget.
 - **Gold and Crystals** are taken in full without consuming Carry Capacity.
 - **Prisoners** also use no Carry Capacity.
 
-For example, three minions each carrying `1.5` provide `floor(4.5) = 4` carry units. If six Golden Cups of `carry_size = 1` were found, the player can select four.
+For example, three minions each carrying `1.5` provide `floor(4.5) = 4` carry slots. If six Golden Cups with `max_stack_size = 5` were found, selecting all six forms two stacks (`5` + `1`), costing two of the four available slots.
 
 ### 6.2 Claim Resolution
 
 On pressing **Claim**:
 
 1. Credit discovered Gold and Crystals on success.
-2. Stack selected physical items by their configured `max_stack_size`, filling available Inventory stacks and shared storage slots. Silently discard any surplus that does not fit.
+2. Stack selected physical items by their configured `max_stack_size` (the same stacking used to compute the carry budget in §6.1), filling available Inventory stacks and shared storage slots. Silently discard any surplus that does not fit.
 3. Sort captured prisoners by Rank and automatically assign them to available Dungeon cells; discard any excess.
 4. Apply returning `Tired`/`Injured` conditions and release all participating minions.
 5. Mark a successful first Claim as mission completion and unlock the next World Tier or trigger victory when its condition is satisfied.
@@ -349,7 +351,7 @@ Gold and Crystals appear in the **HUD**.
 
 ### 7.2 Items and Stacks
 
-- Each item definition has an ID, tags, `max_stack_size`, `carry_size`, and `sell_price_gold` per copy.
+- Each item definition has an ID, tags, `max_stack_size`, and `base_value_gold` per copy.
 - A stack holds **up to** its item's maximum count and consumes **one Inventory slot**.
 - Identical item copies may occupy multiple stacks when the maximum is exceeded.
 - Items can be sold or consumed as costs for research and upgrades.
@@ -424,7 +426,7 @@ The Dungeon's recruitment chance and processing duration must account for prison
 - **Training Hall:** whether training-speed upgrades exist in addition to station and rank-unlock upgrades.
 - **Sleeping and recovery:** eligibility and shortage accounting for minions occupied by raids/training at night; whether/how prolonged Infirmary bed shortages interact with the two-day bed rule; treatment-queue ordering among multiple Injured minions.
 - **Inventory sales:** how many normal sales can run concurrently, whether a stack is reserved/removed when a sale starts, time-scaling formula, and rounding of half-price sales.
-- **Raid Report:** default item selection policy when carry sizes differ; order of accepting selected items if storage fills; whether Rank sorting for prisoners is high-to-low or low-to-high.
+- **Raid Report:** order of accepting selected items if storage fills; whether Rank sorting for prisoners is high-to-low or low-to-high.
 - **Dungeon:** relative probabilities for Recruitment, Interrogation, and Death; event/secret definitions; their interaction with tier unlocking.
 - **World Map:** detailed mission visibility rules for events, secrets, and intelligence upgrade stages.
 - **Research:** precise order for stacking additive/multiplicative global effects.

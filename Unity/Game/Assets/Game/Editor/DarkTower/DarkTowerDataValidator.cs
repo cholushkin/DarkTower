@@ -123,8 +123,7 @@ namespace Game
             {
                 if (item == null) continue;
                 if (item.MaxStackSize < 1) errors.Add($"Item '{item.Id}' max_stack_size must be >= 1.");
-                if (item.CarrySize < 1) errors.Add($"Item '{item.Id}' carry_size must be >= 1.");
-                if (item.SellPriceGold < 0) errors.Add($"Item '{item.Id}' sell_price_gold must be >= 0.");
+                if (item.BaseValueGold < 0) errors.Add($"Item '{item.Id}' base_value_gold must be >= 0.");
             }
         }
 
@@ -451,7 +450,7 @@ namespace Game
                     errors.Add($"StartingBalance item stacks need {stacksNeeded} storage slot(s) but only {storageSlots} are available at session start (see SessionStateFactory.AddStartingStacks).");
             }
 
-            // Capacity-authority agreement (see RoomDefinitions.cs/RulesDefinitions.cs ownership notes):
+            // Capacity-authority agreement (see RoomDefinition.cs/StorehouseRulesDefinition.cs ownership notes):
             // when both are authored, InitialRoomCapabilities wins and InitialStorageSlots is unused.
             if (start.InitialRoomCapabilities.StorageSlots > 0 && db.StorehouseRules != null && db.StorehouseRules.InitialStorageSlots > 0)
                 warnings.Add("Both StartingBalance.InitialRoomCapabilities.StorageSlots and StorehouseRulesDefinition.InitialStorageSlots are set; the former wins and the latter is never used.");

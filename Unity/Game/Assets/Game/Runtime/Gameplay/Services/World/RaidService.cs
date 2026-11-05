@@ -235,11 +235,13 @@ namespace Game
                 var byId = new Dictionary<EntityId, DiscoveredItemCopy>();
                 for (int i = 0; i < discovered.Count; i++) byId[discovered[i].Id] = discovered[i];
 
+                var selectedItems = new List<ItemDefinition>();
                 foreach (var id in selectedSet)
                 {
                     if (!byId.TryGetValue(id, out var copy)) return OperationResult.Fail("invalid_selection");
-                    carryUsed += copy.CarrySize;
+                    selectedItems.Add(copy.Item);
                 }
+                carryUsed = RaidCarryRules.SlotsUsed(selectedItems);
             }
             if (carryUsed > raid.CarryLimit) return OperationResult.Fail("carry_budget_exceeded");
 

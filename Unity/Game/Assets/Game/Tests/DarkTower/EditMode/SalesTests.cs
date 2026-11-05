@@ -10,7 +10,7 @@ namespace Game.Tests
             var (db, h) = GameplayTestFixtures.BuildMinimalDatabase();
             using var session = GameplaySessionComposer.Create(db, 1);
 
-            session.Inventory.TryInsert(h.PlainItem, 4); // sellPriceGold 2 => gross value 8
+            session.Inventory.TryInsert(h.PlainItem, 4); // baseValueGold 2 => gross value 8
             var stack = session.Inventory.Stacks[0];
             int goldBefore = session.Economy.Gold.CurrentValue;
 

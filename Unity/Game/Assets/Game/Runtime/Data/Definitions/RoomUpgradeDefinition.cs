@@ -1,23 +1,8 @@
+using Alchemy.Inspector;
 using UnityEngine;
 
 namespace Game
 {
-    /// One of the seven rooms and the upgrades it offers. Rooms do not have levels; progression is
-    /// tracked through completed upgrade ids. A room's STARTING capacities are never authored here —
-    /// StartingBalanceDefinition.InitialRoomCapabilities is the sole authority for session-start
-    /// values (see SessionStateFactory), so a room definition carries no capacity fields of its own.
-    [CreateAssetMenu(menuName = "Dark Tower/Room", fileName = "Room")]
-    public sealed class RoomDefinition : ScriptableObject
-    {
-        [SerializeField] private RoomId roomId;
-        [SerializeField] private string displayName;
-        [SerializeField] private RoomUpgradeDefinition[] upgrades;
-
-        public RoomId RoomId => roomId;
-        public string DisplayName => displayName;
-        public RoomUpgradeDefinition[] Upgrades => upgrades;
-    }
-
     /// One individually purchased room upgrade. A paid upgrade starts a timed construction; its
     /// effect activates on completion. Sequential chains are expressed via series id + step index
     /// and prerequisite upgrades.
@@ -60,5 +45,13 @@ namespace Game
         public long TowerXpReward => towerXpReward;
 
         public bool IsSequential => !string.IsNullOrEmpty(seriesId);
+
+        [Button]
+        private void PrintInfo()
+        {
+            Debug.Log($"[RoomUpgrade:{upgradeId}] '{displayName}' room={roomId} isSequential={IsSequential} " +
+                $"seriesId='{seriesId}' stepIndex={stepIndex} cost(gold={cost.Gold},crystals={cost.Crystals}) " +
+                $"towerXpReward={towerXpReward}", this);
+        }
     }
 }

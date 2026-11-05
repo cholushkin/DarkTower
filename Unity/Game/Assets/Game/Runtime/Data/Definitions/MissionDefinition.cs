@@ -1,3 +1,4 @@
+using Alchemy.Inspector;
 using UnityEngine;
 
 namespace Game
@@ -45,5 +46,13 @@ namespace Game
 
         public UnlockCondition[] UnlockConditions => unlockConditions;
         public SquadConstraints SquadConstraints => squadConstraints;
+
+        [Button]
+        private void PrintInfo()
+        {
+            Debug.Log($"[Mission:{missionId}] '{displayName}' requiredPower={requiredPower} " +
+                $"gold={goldRange.Min}-{goldRange.Max} crystals={crystalRange.Min}-{crystalRange.Max} " +
+                $"itemRewards={itemRewards?.Length ?? 0} prisoners={prisonerCountRange.Min}-{prisonerCountRange.Max}", this);
+        }
     }
 }

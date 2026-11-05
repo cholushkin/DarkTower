@@ -1,7 +1,9 @@
 {
     "name": "DarkTower.Data",
     "rootNamespace": "Game",
-    "references": [],
+    "references": [
+        "GUID:88be65f96b86746888c927a5c8ff3534"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

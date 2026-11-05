@@ -15,15 +15,15 @@ namespace Game
             var selected = new List<EntityId>();
             if (copies == null) return selected;
 
-            int remaining = carryLimit;
+            var selectedItems = new List<ItemDefinition>();
             for (int i = 0; i < copies.Count; i++)
             {
                 var copy = copies[i];
-                if (copy.CarrySize <= remaining)
-                {
+                selectedItems.Add(copy.Item);
+                if (RaidCarryRules.SlotsUsed(selectedItems) <= carryLimit)
                     selected.Add(copy.Id);
-                    remaining -= copy.CarrySize;
-                }
+                else
+                    selectedItems.RemoveAt(selectedItems.Count - 1);
             }
             return selected;
         }
