@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5af53db8b4ba5f040a95f52b50b0de3c, type: 3}
+  m_Name: FarmersPitchfork
+  m_EditorClassIdentifier: DarkTower.Data::Game.ItemDefinition
+  itemId: 'FarmersPitchfork '
+  displayName: 'Farmer''s Pitchfork '
+  description: Three sharp points. One very convincing argument.
+  icon: {fileID: 480785413, guid: 07ff326d80abf8d40857c68e75eb5f3f, type: 3}
+  tags: 2
+  maxStackSize: 1
+  carrySize: 1
+  sellPriceGold: 111

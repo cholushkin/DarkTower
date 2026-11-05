@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Rank5
   m_EditorClassIdentifier: DarkTower.Data::Game.RankDefinition
   rank: 5
-  displayName: R5
+  displayName: Captain
   attack: 5
   defense: 5
-  salaryGoldPerWeek: 5
-  carryCapacity: 5
+  salaryGoldPerWeek: 500
+  carryCapacity: 6

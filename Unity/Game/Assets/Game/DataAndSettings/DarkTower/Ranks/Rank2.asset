@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Rank2
   m_EditorClassIdentifier: DarkTower.Data::Game.RankDefinition
   rank: 2
-  displayName: R2
+  displayName: Grunt
   attack: 2
   defense: 2
-  salaryGoldPerWeek: 2
+  salaryGoldPerWeek: 150
   carryCapacity: 2

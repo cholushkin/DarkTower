@@ -19,8 +19,31 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e43acbf702d8c9b45aa3d171a9c4c0b9, type: 2}
   - {fileID: 11400000, guid: 930c505444ef70c4cb9f1190047e6489, type: 2}
   items:
+  - {fileID: 11400000, guid: 8e7198643b8af674cb2fd794b89ddf9c, type: 2}
+  - {fileID: 11400000, guid: 3bf1a950139afb846b7f5298cb73de91, type: 2}
+  - {fileID: 11400000, guid: dbf23f570ddec42469727fc70e8578a4, type: 2}
+  - {fileID: 11400000, guid: beb289281c8df6b4392b9ec16fb1ce4a, type: 2}
   - {fileID: 11400000, guid: 2d12f3dcdc97d0444a3749dfc7827a37, type: 2}
+  - {fileID: 11400000, guid: 9449c447a540ce245ae6f736afecf57b, type: 2}
   - {fileID: 11400000, guid: 9a066d696b0d0104782bb4b6abdb9aed, type: 2}
+  - {fileID: 11400000, guid: 65fd669703a8a514a8ff3b7ebfcf4915, type: 2}
+  - {fileID: 11400000, guid: d0b12243e00037c4d9f77ebc8775d64a, type: 2}
+  - {fileID: 11400000, guid: 3970a8b87ce90054ba9f286587c96915, type: 2}
+  - {fileID: 11400000, guid: 6b83fe33ba5892343a4601f643745418, type: 2}
+  - {fileID: 11400000, guid: e6892b85de4cb474d88310b3f94025b5, type: 2}
+  - {fileID: 11400000, guid: c951df2ce368f2a4e832ae6bad99aa6f, type: 2}
+  - {fileID: 11400000, guid: cc03d87e2b68df6408b9a22e38513acd, type: 2}
+  - {fileID: 11400000, guid: e53d9a8c33c1f0b49a97eddf6ecd0248, type: 2}
+  - {fileID: 11400000, guid: b9df769da3548b14f81704e9a9e86f86, type: 2}
+  - {fileID: 11400000, guid: 002f572b215e9e640aa0451597fa707c, type: 2}
+  - {fileID: 11400000, guid: c34035d4961daaa499dfbf6a4411e7c4, type: 2}
+  - {fileID: 11400000, guid: d6f86681bbb913a4ca4d9a808e1dccfc, type: 2}
+  - {fileID: 11400000, guid: 39df2018e381f8b45b742e46c60919a7, type: 2}
+  - {fileID: 11400000, guid: 95fcd24872157664786c4f0e0976bd86, type: 2}
+  - {fileID: 11400000, guid: a43a46e855801504cb29ef7de772468d, type: 2}
+  - {fileID: 11400000, guid: 55f249a142712134eb171d9d0e987a41, type: 2}
+  - {fileID: 11400000, guid: 0ca7da38c103ab2458178fefe22a941e, type: 2}
+  - {fileID: 11400000, guid: a4d54ae93e0b29047a9bf1b1c658ffdc, type: 2}
   missions:
   - {fileID: 11400000, guid: a21f75b5e1872fb4383c54ed61052eae, type: 2}
   rooms: []
@@ -30,7 +53,7 @@ MonoBehaviour:
   rewardTables: []
   events: []
   worldMap: {fileID: 11400000, guid: 2a33a2452062ce546b8691ac49ee16f5, type: 2}
-  globalBalance: {fileID: 0}
+  globalBalance: {fileID: 11400000, guid: d78ce16832f45444ba2d0931863b3de0, type: 2}
   startingBalance: {fileID: 11400000, guid: f724500562b784d4ebaaa35ce8d9d51a, type: 2}
   towerLevelProgression: {fileID: 0}
   storehouseRules: {fileID: 11400000, guid: 11e81ee7401fa5a4eb712f4fcbc97d15, type: 2}

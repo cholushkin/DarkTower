@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Rank4
   m_EditorClassIdentifier: DarkTower.Data::Game.RankDefinition
   rank: 4
-  displayName: R4
+  displayName: Veteran
   attack: 4
   defense: 4
-  salaryGoldPerWeek: 4
+  salaryGoldPerWeek: 300
   carryCapacity: 4

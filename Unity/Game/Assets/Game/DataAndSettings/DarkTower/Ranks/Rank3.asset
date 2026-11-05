@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Rank3
   m_EditorClassIdentifier: DarkTower.Data::Game.RankDefinition
   rank: 3
-  displayName: R3
+  displayName: Raider
   attack: 3
   defense: 3
-  salaryGoldPerWeek: 3
+  salaryGoldPerWeek: 180
   carryCapacity: 3

@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Rank1
   m_EditorClassIdentifier: DarkTower.Data::Game.RankDefinition
   rank: 1
-  displayName: R1
+  displayName: Rookie
   attack: 1
   defense: 1
-  salaryGoldPerWeek: 1
+  salaryGoldPerWeek: 100
   carryCapacity: 1
