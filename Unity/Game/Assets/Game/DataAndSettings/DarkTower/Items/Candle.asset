@@ -17,5 +17,5 @@ MonoBehaviour:
   description: Burns bright, dies young. A role model for your minions.
   icon: {fileID: -83489789, guid: 07ff326d80abf8d40857c68e75eb5f3f, type: 3}
   tags: 0
-  maxStackSize: 1
+  maxStackSize: 5
   baseValueGold: 111

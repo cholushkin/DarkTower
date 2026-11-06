@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 307b91994708de64b83062b5b634c698, type: 3}
-  m_Name: StartingBalance
+  m_Name: StartingBalance(all items)
   m_EditorClassIdentifier: DarkTower.Data::Game.StartingBalanceDefinition
   startingGold: 3000
   startingCrystals: 10
@@ -22,10 +22,26 @@ MonoBehaviour:
   - rank: 0
     conditions: 0
   startingItemStacks:
+  - item: {fileID: 11400000, guid: 8e7198643b8af674cb2fd794b89ddf9c, type: 2}
+    amount: 5
+  - item: {fileID: 11400000, guid: 3bf1a950139afb846b7f5298cb73de91, type: 2}
+    amount: 5
+  - item: {fileID: 11400000, guid: dbf23f570ddec42469727fc70e8578a4, type: 2}
+    amount: 5
+  - item: {fileID: 11400000, guid: beb289281c8df6b4392b9ec16fb1ce4a, type: 2}
+    amount: 5
   - item: {fileID: 11400000, guid: 2d12f3dcdc97d0444a3749dfc7827a37, type: 2}
-    amount: 2
+    amount: 5
+  - item: {fileID: 11400000, guid: 9449c447a540ce245ae6f736afecf57b, type: 2}
+    amount: 5
+  - item: {fileID: 11400000, guid: 9a066d696b0d0104782bb4b6abdb9aed, type: 2}
+    amount: 5
+  - item: {fileID: 11400000, guid: 65fd669703a8a514a8ff3b7ebfcf4915, type: 2}
+    amount: 5
+  - item: {fileID: 11400000, guid: d0b12243e00037c4d9f77ebc8775d64a, type: 2}
+    amount: 5
   initialRoomCapabilities:
-    storageSlots: 10
+    storageSlots: 100
     quartersBeds: 5
     infirmaryBeds: 2
     trainingStations: 2

@@ -17,5 +17,5 @@ MonoBehaviour:
   description: The tooth fairy's evil twin doesn't wait for teeth to fall out.
   icon: {fileID: 1902572729, guid: 07ff326d80abf8d40857c68e75eb5f3f, type: 3}
   tags: 1
-  maxStackSize: 1
+  maxStackSize: 32
   baseValueGold: 111

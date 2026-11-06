@@ -17,5 +17,5 @@ MonoBehaviour:
   description: Once bought an entire kingdom. Inflation happened.
   icon: {fileID: 1910443247, guid: 07ff326d80abf8d40857c68e75eb5f3f, type: 3}
   tags: 1
-  maxStackSize: 1
-  baseValueGold: 111
+  maxStackSize: 10
+  baseValueGold: 500

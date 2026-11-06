@@ -9,14 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 302825be9b3a448a759003b43f6e6ba2, type: 3}
   m_Name: StorehouseRules
-  m_EditorClassIdentifier: DarkTower.Data:Game:StorehouseRulesDefinition
-  initialStorageSlots: 0
+  m_EditorClassIdentifier: DarkTower.Data::Game.StorehouseRulesDefinition
+  initialStorageSlots: 180
   saleDurationRule:
     baseDuration:
-      value: 0
+      value: 4
       unit: 0
-    durationPerCopyHours: 0
+    durationPerCopyHours: 12
   instantSaleMultiplier: 0.5
   priceRoundingRule: 0

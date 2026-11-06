@@ -27,5 +27,9 @@ MonoBehaviour:
     unit: 0
   prerequisiteUpgrades: []
   additionalRequirements: []
-  effects: []
+  effects:
+  - kind: 0
+    amount: 0
+    targetId: 
+    note: 
   towerXpReward: 0

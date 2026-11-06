@@ -17,5 +17,5 @@ MonoBehaviour:
   description: Three sharp points. One very convincing argument.
   icon: {fileID: 480785413, guid: 07ff326d80abf8d40857c68e75eb5f3f, type: 3}
   tags: 2
-  maxStackSize: 1
+  maxStackSize: 5
   baseValueGold: 111
