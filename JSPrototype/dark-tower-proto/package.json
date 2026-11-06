@@ -1,0 +1,16 @@
+{
+  "name": "dark-tower-proto",
+  "version": "1.0.0",
+  "description": "Mechanics-complete TypeScript prototype for Dark Tower, driven by DarkTowerGameDesign.md",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "selftest": "tsx selftest.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.0",
+    "vite": "^5.4.0"
+  }
+}
