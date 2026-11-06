@@ -15,6 +15,7 @@ namespace Game
         [SerializeField] private ItemTag tags;
         [SerializeField, Min(1)] private int maxStackSize = 1;
         [SerializeField, Min(0)] private int baseValueGold;
+        [SerializeField] private bool isSellable = true;
 
         public string Id => itemId;
         public string DisplayName => displayName;
@@ -24,6 +25,9 @@ namespace Game
         public int MaxStackSize => maxStackSize;
         public int BaseValueGold => baseValueGold;
 
+        /// Lets the catalog deny selling for a specific item even if it carries a non-zero BaseValueGold.
+        public bool IsSellable => isSellable;
+
         /// Whether this item appears under the Treasures inventory filter.
         public bool IsTreasure => (tags & ItemTag.Treasure) != 0;
 
@@ -31,7 +35,7 @@ namespace Game
         private void PrintInfo()
         {
             Debug.Log($"[Item:{itemId}] '{displayName}' tags={tags} maxStackSize={maxStackSize} " +
-                $"baseValueGold={baseValueGold} isTreasure={IsTreasure}", this);
+                $"baseValueGold={baseValueGold} isSellable={isSellable} isTreasure={IsTreasure}", this);
         }
     }
 }

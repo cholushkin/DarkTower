@@ -1,3 +1,4 @@
+using Game.UI.WindowSystem;
 using VContainer;
 using VContainer.Unity;
 
@@ -13,7 +14,11 @@ namespace Game
         {
             builder.RegisterComponentInHierarchy<WindowService>().AsImplementedInterfaces().AsSelf();
 
-            builder.Register(resolver => new StorehouseViewModel(resolver.Resolve<GameSessionModel>().Inventory), Lifetime.Transient);
+            builder.Register(resolver => new StorehouseViewModel(
+                resolver.Resolve<GameSessionModel>(),
+                resolver.Resolve<SalesService>(),
+                resolver.Resolve<ClockService>(),
+                resolver.Resolve<IWindowService>()), Lifetime.Transient);
         }
     }
 }

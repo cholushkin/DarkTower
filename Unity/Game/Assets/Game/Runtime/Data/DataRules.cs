@@ -32,6 +32,23 @@ namespace Game
         }
     }
 
+    public static class SalesRules
+    {
+        /// Total sale value of an entire stack: per-copy value times quantity.
+        public static int TotalSaleValueGold(int quantity, int baseValueGold) => quantity * baseValueGold;
+
+        /// Rounds a fractional gold payout (e.g. a half-value sale) per the catalog's configured rule.
+        public static int RoundSalePrice(float value, SaleRoundingRule rule)
+        {
+            switch (rule)
+            {
+                case SaleRoundingRule.Ceil: return Mathf.CeilToInt(value);
+                case SaleRoundingRule.Round: return Mathf.RoundToInt(value);
+                default: return Mathf.FloorToInt(value);
+            }
+        }
+    }
+
     public static class StatCalculator
     {
         /// Applies global research effects to one base combat stat. Additive effects are summed,

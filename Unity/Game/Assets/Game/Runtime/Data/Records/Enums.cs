@@ -73,7 +73,8 @@ namespace Game
     public enum ActivityStatus
     {
         Running,
-        Completed
+        Completed,
+        Cancelled
     }
 
     /// Item gameplay categories. Treasure drives the Treasures inventory filter; the rest are open categories.

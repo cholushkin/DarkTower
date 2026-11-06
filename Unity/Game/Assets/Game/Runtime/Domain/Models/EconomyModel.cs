@@ -3,9 +3,9 @@ using R3;
 
 namespace Game
 {
-    /// A timed or instant stack sale.
-    /// TODO: whether the stack is reserved/removed when the sale starts, and how many sales may run
-    /// at once, are open design decisions; this model carries the data either policy needs.
+    /// A timed or instant stack sale. For SaleKind.Normal, the stack stays reserved in InventoryModel
+    /// until this sale completes, is rushed, or is cancelled (see SalesService) — only one Running
+    /// sale may exist per stack at a time.
     public sealed class SaleOperationModel : ModelBase
     {
         private readonly ReactiveProperty<ActivityStatus> _status;
@@ -34,6 +34,7 @@ namespace Game
         public ReadOnlyReactiveProperty<ActivityStatus> Status => _status;
 
         internal void Complete() => _status.Value = ActivityStatus.Completed;
+        internal void Cancel() => _status.Value = ActivityStatus.Cancelled;
     }
 
     /// Currencies and active sale operations. Gold/Crystals are HUD currencies, not inventory stacks.

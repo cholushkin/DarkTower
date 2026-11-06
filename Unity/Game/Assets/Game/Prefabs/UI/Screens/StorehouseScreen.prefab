@@ -2047,6 +2047,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: DarkTower.Presentation::Game.StorehouseComposer
   _view: {fileID: 6534850469782780817}
+  _closeBackButton: {fileID: 7411565534977154906}
 --- !u!114 &6534850469782780817
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2062,6 +2063,8 @@ MonoBehaviour:
   _content: {fileID: 3009921590700081385}
   _slotPrefab: {fileID: 1240892729105942026, guid: babde814752ecda4097a15bb8bbd5db5, type: 3}
   _itemPrefab: {fileID: 5952849431957897888, guid: 23f5fc05a4d18674aad33e08e61302bb, type: 3}
+  _tooltipRoot: {fileID: 4948165675477370834}
+  _tooltipText: {fileID: 2764875878256896176}
 --- !u!1 &7574697612748680232
 GameObject:
   m_ObjectHideFlags: 0
