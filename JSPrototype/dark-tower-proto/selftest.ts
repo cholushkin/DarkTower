@@ -31,6 +31,17 @@ console.log("[1] Initial state");
     check(engine.state.gold === CONFIG.startingBalance.gold, "starts with configured gold");
     check(engine.state.missionState("t1_millbrook") === "AVAILABLE", "tier-1 mission is available at start");
     check(engine.state.missionState("t2_ravenswood") === "LOCKED", "tier-2 mission is locked at start");
+
+    check(engine.state.usedSlots() === CONFIG.startingItems.length, "starting items occupy exactly one stack each");
+    check(engine.state.usedSlots() <= engine.state.storageSlots(), "starting inventory respects Storehouse capacity");
+    for (const starting of CONFIG.startingItems) {
+        const stack = engine.state.stacks.find(s => s.itemId === starting.itemId);
+        check(!!stack && stack.count === starting.count, `starting stock includes ${starting.count}x ${starting.itemId}`);
+    }
+    const treasureStack = engine.state.stacks.find(s => s.itemId === "golden_cup")!;
+    const goldBeforeInstantSale = engine.state.gold;
+    check(engine.instantSale(treasureStack.id), "a starting treasure stack can be sold immediately");
+    check(engine.state.gold > goldBeforeInstantSale, "instant-selling starting stock pays out gold");
 }
 
 // --- 2. Room upgrade purchase + construction ---
@@ -86,6 +97,7 @@ console.log("\n[3] Raid lifecycle");
 console.log("\n[4] Claim resolution — loot stacking and prisoners");
 {
     const engine = new GameEngine();
+    engine.state.stacks = []; // isolate from starting inventory; this test asserts exact stack-splitting counts
     const squad = engine.state.minions.slice(0, 1).map(m => m.id);
     const minion = engine.state.findMinion(squad[0])!;
     minion.activity = { type: "raid", missionId: "t1_millbrook" };
@@ -174,6 +186,7 @@ console.log("\n[7] Dungeon");
 console.log("\n[8] Storehouse sales");
 {
     const engine = new GameEngine();
+    engine.state.stacks = []; // isolate from starting inventory; this test asserts exact stack counts/payouts
     engine.state.addItems("cobblestone", 10);
     const stack = engine.state.stacks.find(s => s.itemId === "cobblestone")!;
     const goldBefore = engine.state.gold;

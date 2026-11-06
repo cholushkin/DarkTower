@@ -116,6 +116,11 @@ export interface StartingBalance {
     dungeonCells: number;
 }
 
+export interface StartingItemDef {
+    itemId: string;
+    count: number;
+}
+
 export interface Constants {
     dayLengthRealSeconds: number;
     weekDays: number;
@@ -141,5 +146,6 @@ export interface GameConfig {
     trainingTransitions: TrainingTransitionDef[];
     towerXpThresholds: number[];
     startingBalance: StartingBalance;
+    startingItems: StartingItemDef[];
     constants: Constants;
 }

@@ -184,6 +184,17 @@ export const CONFIG: GameConfig = {
         dungeonCells: 2,
     },
 
+    // Small starting stock so the Storehouse/Inventory/sell flow is immediately exercisable
+    // without waiting on a raid. Mixes treasures and ordinary items at different stack fills
+    // (including one full max-size-1 stack) and stays well under startingBalance.storageSlots.
+    startingItems: [
+        { itemId: "golden_cup", count: 3 },
+        { itemId: "silver_necklace", count: 2 },
+        { itemId: "ancient_crown", count: 1 },
+        { itemId: "iron_ore", count: 8 },
+        { itemId: "cobblestone", count: 12 },
+    ],
+
     constants: {
         dayLengthRealSeconds: 60,
         weekDays: 7,

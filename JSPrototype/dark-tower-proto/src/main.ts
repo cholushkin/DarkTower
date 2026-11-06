@@ -7,6 +7,7 @@ import { renderWorldMapScreen } from "./ui/WorldMapScreen";
 import { renderRaidReportModal } from "./ui/RaidReportModal";
 import { renderPayrollModal } from "./ui/PayrollModal";
 import { renderDebugPanel } from "./ui/DebugPanel";
+import { morph } from "./ui/morph";
 
 export type Screen = "tower" | "inventory" | "world";
 export type InventoryTab = "treasures" | "items" | "minions";
@@ -31,11 +32,11 @@ function render(): void {
     const state = engine.state;
 
     if (state.gameOver) {
-        app.innerHTML = `<div class="end-screen"><h1>Game Over — Bankruptcy</h1><p>The weekly payroll went unpaid. The tower has fallen.</p></div>`;
+        morph(app, `<div class="end-screen"><h1>Game Over — Bankruptcy</h1><p>The weekly payroll went unpaid. The tower has fallen.</p></div>`);
         return;
     }
     if (state.victory) {
-        app.innerHTML = `<div class="end-screen"><h1>Victory!</h1><p>Every mission on the World Map has been claimed.</p></div>`;
+        morph(app, `<div class="end-screen"><h1>Victory!</h1><p>Every mission on the World Map has been claimed.</p></div>`);
         return;
     }
 
@@ -50,12 +51,12 @@ function render(): void {
             ? renderRaidReportModal(engine, openReportMissionId)
             : "";
 
-    app.innerHTML = `
+    morph(app, `
         ${renderHud(engine, screen)}
         <main class="screen-body">${screenHtml}</main>
         ${renderDebugPanel(engine)}
         ${overlay}
-    `;
+    `);
 }
 
 app.addEventListener("click", (e) => {
@@ -154,9 +155,11 @@ function loop(now: number): void {
     requestAnimationFrame(loop);
 }
 
-// Rendering rebuilds the whole screen as HTML (simple/minimal by design — see README), so it
-// runs on a slow timer rather than every animation frame: cheaper, and avoids the DOM churn
-// that comes from replacing clickable elements 60 times a second while the game clock ticks.
+// render() builds a full HTML string per screen (simple/minimal by design — see README) but
+// applies it via morph(), which patches the live DOM instead of replacing it — existing buttons,
+// checkboxes, focus and scroll position survive a re-render. That makes it safe to run on a timer
+// independent of user actions, so game-hours/timer displays stay live without needing per-frame
+// renders (unnecessary at this update rate) or any risk of eating a mid-render click.
 render();
 requestAnimationFrame(loop);
 setInterval(render, 200);

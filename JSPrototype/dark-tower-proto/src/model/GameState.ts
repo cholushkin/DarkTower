@@ -56,6 +56,9 @@ export class GameState {
                 waitingSince: null,
             });
         }
+        for (const starting of CONFIG.startingItems) {
+            this.addItems(starting.itemId, starting.count);
+        }
         this.log("The tower stirs. Three minions await your command.");
     }
 
