@@ -6,11 +6,11 @@ import type { GameConfig } from "./types";
 
 export const CONFIG: GameConfig = {
     ranks: [
-        { rank: 1, name: "Rookie", attack: 5, defense: 5, salaryGoldPerWeek: 10, carryCapacity: 1.0 },
-        { rank: 2, name: "Grunt", attack: 8, defense: 7, salaryGoldPerWeek: 18, carryCapacity: 1.2 },
-        { rank: 3, name: "Raider", attack: 12, defense: 10, salaryGoldPerWeek: 30, carryCapacity: 1.5 },
-        { rank: 4, name: "Veteran", attack: 17, defense: 14, salaryGoldPerWeek: 48, carryCapacity: 1.8 },
-        { rank: 5, name: "Captain", attack: 23, defense: 19, salaryGoldPerWeek: 70, carryCapacity: 2.2 },
+        { rank: 1, name: "Rookie", attack: 5, defense: 5, salaryGoldPerWeek: 50, carryCapacity: 1.0 },
+        { rank: 2, name: "Grunt", attack: 8, defense: 7, salaryGoldPerWeek: 80, carryCapacity: 2 },
+        { rank: 3, name: "Raider", attack: 12, defense: 10, salaryGoldPerWeek: 100, carryCapacity: 3 },
+        { rank: 4, name: "Veteran", attack: 17, defense: 14, salaryGoldPerWeek: 150, carryCapacity: 4 },
+        { rank: 5, name: "Captain", attack: 23, defense: 19, salaryGoldPerWeek: 250, carryCapacity: 5 },
     ],
 
     items: [
@@ -18,11 +18,11 @@ export const CONFIG: GameConfig = {
         { id: "ancient_crown", name: "Ancient Crown", tags: ["treasure"], maxStackSize: 1, baseValueGold: 150 },
         { id: "silver_necklace", name: "Silver Necklace", tags: ["treasure"], maxStackSize: 5, baseValueGold: 25 },
         { id: "enchanted_gem", name: "Enchanted Gem", tags: ["treasure"], maxStackSize: 3, baseValueGold: 80 },
-        { id: "cow", name: "Cow", tags: [], maxStackSize: 1, baseValueGold: 15 },
-        { id: "cobblestone", name: "Cobblestone", tags: [], maxStackSize: 30, baseValueGold: 1 },
-        { id: "iron_ore", name: "Iron Ore", tags: [], maxStackSize: 20, baseValueGold: 3 },
-        { id: "wheat_sack", name: "Wheat Sack", tags: [], maxStackSize: 15, baseValueGold: 2 },
-        { id: "leather_hide", name: "Leather Hide", tags: [], maxStackSize: 10, baseValueGold: 4 },
+        { id: "cow", name: "Cow", tags: ["ingridients"], maxStackSize: 1, baseValueGold: 15 },
+        { id: "cobblestone", name: "Cobblestone", tags: ["materials"], maxStackSize: 30, baseValueGold: 1 },
+        { id: "iron_ore", name: "Iron Ore", tags: ["materials"], maxStackSize: 20, baseValueGold: 3 },
+        { id: "wheat_sack", name: "Wheat Sack", tags: ["weapons"], maxStackSize: 15, baseValueGold: 2 },
+        { id: "leather_hide", name: "Leather Hide", tags: ["ingridients"], maxStackSize: 10, baseValueGold: 4 },
     ],
 
     worldTiers: [
@@ -112,11 +112,11 @@ export const CONFIG: GameConfig = {
 
     upgrades: [
         // Storehouse
-        { id: "sh_storage_1", room: "storehouse", name: "Storage Shelves I", description: "Add 5 storage slots.", costGold: 40, durationHours: 1, requires: [], effect: { type: "storageSlots", amount: 5 }, towerXp: 5 },
-        { id: "sh_storage_2", room: "storehouse", name: "Storage Shelves II", description: "Add 8 more storage slots.", costGold: 120, durationHours: 3, requires: ["sh_storage_1"], effect: { type: "storageSlots", amount: 8 }, towerXp: 8 },
-        { id: "sh_storage_3", room: "storehouse", name: "Storage Shelves III", description: "Add 12 more storage slots.", costGold: 300, durationHours: 6, requires: ["sh_storage_2"], effect: { type: "storageSlots", amount: 12 }, towerXp: 12 },
-        { id: "sh_sale_eff_1", room: "storehouse", name: "Sale Efficiency I", description: "Normal sales take 25% less time.", costGold: 60, durationHours: 2, requires: [], effect: { type: "saleEfficiency", multiplier: 0.75 }, towerXp: 5 },
-        { id: "sh_sale_eff_2", room: "storehouse", name: "Sale Efficiency II", description: "Normal sales take another 20% less time.", costGold: 150, durationHours: 4, requires: ["sh_sale_eff_1"], effect: { type: "saleEfficiency", multiplier: 0.8 }, towerXp: 8 },
+        { id: "sh_storage_1", room: "storehouse", name: "Storage Shelves I", description: "Add 10 storage slots.", costGold: 100, durationHours: 1, requires: [], effect: { type: "storageSlots", amount: 10 }, towerXp: 5 },
+        { id: "sh_storage_2", room: "storehouse", name: "Storage Shelves II", description: "Add 20 more storage slots.", costGold: 200, durationHours: 3, requires: ["sh_storage_1"], effect: { type: "storageSlots", amount: 20 }, towerXp: 8 },
+        { id: "sh_storage_3", room: "storehouse", name: "Storage Shelves III", description: "Add 80 more storage slots.", costGold: 500, durationHours: 6, requires: ["sh_storage_2"], effect: { type: "storageSlots", amount: 80 }, towerXp: 12 },
+        { id: "sh_sale_eff_1", room: "storehouse", name: "Sale Efficiency I", description: "Normal sales take 25% less time.", costGold: 200, durationHours: 2, requires: [], effect: { type: "saleEfficiency", multiplier: 0.75 }, towerXp: 5 },
+        { id: "sh_sale_eff_2", room: "storehouse", name: "Sale Efficiency II", description: "Normal sales take another 25% less time.", costGold: 500, durationHours: 4, requires: ["sh_sale_eff_1"], effect: { type: "saleEfficiency", multiplier: 0.75 }, towerXp: 8 },
 
         // Quarters
         { id: "qt_bed_1", room: "quarters", name: "Extra Bed I", description: "Add one Quarters bed.", costGold: 30, durationHours: 1, requires: [], effect: { type: "bed" }, towerXp: 3 },
@@ -174,7 +174,7 @@ export const CONFIG: GameConfig = {
     towerXpThresholds: [0, 30, 70, 120, 190, 280, 400, 550, 750, 1000, 1300],
 
     startingBalance: {
-        gold: 150,
+        gold: 100,
         crystals: 5,
         minionRanks: [1, 1, 1],
         storageSlots: 20,
